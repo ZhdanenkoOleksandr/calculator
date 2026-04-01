@@ -25,7 +25,7 @@ export default function ResultsTable({ rows, activeRow }) {
         <table className="w-full text-sm">
           <thead className="sticky top-0 z-10">
             <tr className="bg-zinc-800/80 backdrop-blur-sm border-b border-zinc-700/50">
-              {['Диапазон', 'Цена', 'Выплата $', 'Выплата BBN', 'Остаток BBN'].map(
+              {['Диапазон', 'Цена', '%', 'Выплата $', 'Выплата BBN', 'Остаток BBN'].map(
                 (h) => (
                   <th
                     key={h}
@@ -108,6 +108,23 @@ export default function ResultsTable({ rows, activeRow }) {
                       {row.price != null ? (
                         <span className={isTransition ? 'text-zinc-600' : 'text-zinc-300'}>
                           ${fmt(row.price, 2)}
+                        </span>
+                      ) : (
+                        <span className="text-zinc-700">—</span>
+                      )}
+                    </td>
+
+                    {/* Payout % */}
+                    <td className="px-4 py-3 font-mono text-xs whitespace-nowrap">
+                      {row.payoutPct != null ? (
+                        <span
+                          className={
+                            isFirstPayout || row.isLastPayout
+                              ? 'text-emerald-400 font-semibold'
+                              : 'text-indigo-400'
+                          }
+                        >
+                          {row.payoutPct.toFixed(1)}%
                         </span>
                       ) : (
                         <span className="text-zinc-700">—</span>

@@ -9,27 +9,36 @@ export const DEFAULT_PARAMS = {
   investment: 100,
   entryPrice: 5,
   rangeStep: 10,
-  payoutPercent: 50,
 }
 
 const NUM_RANGES = 10
 
-export function calculateRanges(params) {
-  const { investment, entryPrice, rangeStep, payoutPercent } = params
-  const units = investment / entryPrice
+// Payout schedule (% of investment) for each of the 10 ranges:
+// Range 1:   100% (full recovery)
+// Ranges 2–9: exponential from 10% → 90% (geometric: 10% × 9^(i/7))
+// Range 10:  100% (final payout)
+export function getPayoutSchedule() {
+  const schedule = [100] // range 1
+  for (let i = 0; i < 8; i++) {
+    schedule.push(10 * Math.pow(9, i / 7)) // ~10%, 13.7%, 18.75% … 90%
+  }
+  schedule.push(100) // range 10
+  return schedule
+}
 
-  // Entry range: the range where entryPrice falls
+export function calculateRanges(params) {
+  const { investment, entryPrice, rangeStep } = params
+  const units = investment / entryPrice
+  const schedule = getPayoutSchedule()
+
   const entryRangeIndex = Math.floor(entryPrice / rangeStep)
   const entryRangeLow = entryRangeIndex * rangeStep
   const entryRangeHigh = entryRangeLow + rangeStep
 
-  // Transition range (no payout): one range above entry
   const transRangeIndex = entryRangeIndex + 1
   const transRangeLow = transRangeIndex * rangeStep
   const transRangeHigh = transRangeLow + rangeStep
 
-  // First payout range: two above entry
-  // Price = lower boundary of that range + entryPrice (e.g. 20 + 6 = 26)
   const firstPayoutRangeIndex = entryRangeIndex + 2
   const firstPayoutPrice = firstPayoutRangeIndex * rangeStep + entryPrice
 
@@ -40,6 +49,7 @@ export function calculateRanges(params) {
       payoutUsd: 0,
       payoutBitbon: 0,
       remaining: units,
+      payoutPct: null,
       isEntry: true,
     },
     {
@@ -48,6 +58,7 @@ export function calculateRanges(params) {
       payoutUsd: 0,
       payoutBitbon: 0,
       remaining: units,
+      payoutPct: null,
       isTransition: true,
     },
   ]
@@ -56,23 +67,21 @@ export function calculateRanges(params) {
   let totalPaid = 0
 
   for (let i = 0; i < NUM_RANGES; i++) {
-    if (remaining <= 0) break
-
     const rangeIndex = firstPayoutRangeIndex + i
     const rangeLow = rangeIndex * rangeStep
     const rangeHigh = rangeLow + rangeStep
 
-    // First payout: 100% of investment at special price
-    // Subsequent: payoutPercent% at lower boundary of each range
     const currentPrice = i === 0 ? firstPayoutPrice : rangeLow
-    const payoutUsdTarget = i === 0
-      ? investment                              // 100% recovery
-      : investment * (payoutPercent / 100)      // configured %
+    const payoutPct = schedule[i]
+    const payoutUsdTarget = investment * (payoutPct / 100)
 
-    const payoutBitbon = Math.min(payoutUsdTarget / currentPrice, remaining)
+    // Clamp to remaining — but always add the row (remaining may be 0)
+    const payoutBitbon = remaining > 0
+      ? Math.min(payoutUsdTarget / currentPrice, remaining)
+      : 0
     const actualPayoutUsd = payoutBitbon * currentPrice
 
-    remaining -= payoutBitbon
+    remaining = Math.max(remaining - payoutBitbon, 0)
     totalPaid += actualPayoutUsd
 
     rows.push({
@@ -80,11 +89,11 @@ export function calculateRanges(params) {
       price: currentPrice,
       payoutUsd: actualPayoutUsd,
       payoutBitbon,
-      remaining: Math.max(remaining, 0),
+      remaining,
+      payoutPct,
       isFirstPayout: i === 0,
+      isLastPayout: i === NUM_RANGES - 1,
     })
-
-    if (remaining <= 0) break
   }
 
   return {
@@ -92,7 +101,7 @@ export function calculateRanges(params) {
     summary: {
       units,
       totalPaid,
-      remaining: Math.max(remaining, 0),
+      remaining,
       roi: (totalPaid / investment) * 100,
     },
   }

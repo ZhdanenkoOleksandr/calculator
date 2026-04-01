@@ -1,5 +1,6 @@
 import React from 'react'
 import { motion } from 'framer-motion'
+import { getPayoutSchedule } from '../../pages/Calculator'
 
 const FIELDS = [
   {
@@ -29,16 +30,9 @@ const FIELDS = [
     step: 5,
     description: 'Ширина каждого ценового диапазона',
   },
-  {
-    key: 'payoutPercent',
-    label: 'Процент выплаты',
-    unit: '%',
-    min: 5,
-    max: 100,
-    step: 5,
-    description: 'Доля от депозита на 2-й и последующих выплатах (1-я всегда 100%)',
-  },
 ]
+
+const SCHEDULE = getPayoutSchedule()
 
 function SliderField({ field, value, onChange }) {
   const { key, label, unit, min, max, step, description } = field
@@ -138,16 +132,46 @@ export default function InputPanel({
         </span>
         <span className="text-zinc-700">|</span>
         <span>
-          Payout:{' '}
-          <span className="text-emerald-400 font-semibold">
-            ${(params.investment * params.payoutPercent / 100).toFixed(2)}
-          </span>{' '}
-          / диапазон
+          Диапазонов: <span className="text-amber-400 font-semibold">10</span>
         </span>
         <span className="text-zinc-700">|</span>
         <span>
           Шаг: <span className="text-amber-400 font-semibold">${params.rangeStep}</span>
         </span>
+      </div>
+
+      {/* Payout schedule visual */}
+      <div className="mt-4 p-4 bg-zinc-800/30 rounded-xl border border-zinc-800">
+        <p className="text-xs text-zinc-500 uppercase tracking-wider mb-3 font-semibold">
+          График выплат (фиксированная модель)
+        </p>
+        <div className="flex items-end gap-1 h-12">
+          {SCHEDULE.map((pct, i) => {
+            const isFirst = i === 0
+            const isLast = i === SCHEDULE.length - 1
+            const heightPct = (pct / 100) * 100
+            return (
+              <div key={i} className="flex-1 flex flex-col items-center gap-1 group relative">
+                <div
+                  className={[
+                    'w-full rounded-t transition-all',
+                    isFirst || isLast ? 'bg-emerald-500/70' : 'bg-indigo-500/60',
+                  ].join(' ')}
+                  style={{ height: `${heightPct}%` }}
+                />
+                {/* tooltip on hover */}
+                <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] text-zinc-300 bg-zinc-700 px-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                  {pct.toFixed(1)}%
+                </span>
+              </div>
+            )
+          })}
+        </div>
+        <div className="flex justify-between mt-1.5 text-[10px] text-zinc-600 font-mono">
+          <span>100%</span>
+          <span>10%→90% (экспонента)</span>
+          <span>100%</span>
+        </div>
       </div>
 
       {/* Action buttons */}
