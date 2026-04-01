@@ -9,26 +9,28 @@ export const DEFAULT_PARAMS = {
   investment: 100,
   entryPrice: 5,
   rangeStep: 10,
+  startPercent: 10,
 }
 
 const NUM_RANGES = 10
 
 // Payout schedule (% of investment) for each of the 10 ranges:
 // Range 1:    100% (full recovery, in the first range above entry)
-// Ranges 2–10: exponential from 10% → 100% (geometric: 10% × 10^(i/8), i=0..8)
-export function getPayoutSchedule() {
+// Ranges 2–10: exponential from startPercent → 100%
+//              formula: startPercent × (100/startPercent)^(i/8), i=0..8
+export function getPayoutSchedule(startPercent = 10) {
   const schedule = [100] // range 1: 100%
+  const ratio = 100 / startPercent
   for (let i = 0; i <= 8; i++) {
-    // 9 values: 10% × 10^(i/8) → 10%, ~13.3%, ~17.8%, ~23.7%, ~31.6%, ~42.2%, ~56.2%, ~75%, 100%
-    schedule.push(10 * Math.pow(10, i / 8))
+    schedule.push(startPercent * Math.pow(ratio, i / 8))
   }
   return schedule // 10 values total
 }
 
 export function calculateRanges(params) {
-  const { investment, entryPrice, rangeStep } = params
+  const { investment, entryPrice, rangeStep, startPercent } = params
   const units = investment / entryPrice
-  const schedule = getPayoutSchedule()
+  const schedule = getPayoutSchedule(startPercent)
 
   const entryRangeIndex = Math.floor(entryPrice / rangeStep)
   const entryRangeLow = entryRangeIndex * rangeStep
