@@ -86,6 +86,18 @@ export function calculateRanges(params) {
     })
   }
 
+  // remainingFraction is INDEPENDENT of investment amount —
+  // it is determined solely by entryPrice, rangeStep, startPercent.
+  const remainingFraction = units > 0 ? remaining / units : 0
+  const meetsRetention = remainingFraction >= 0.1
+
+  // Minimum investment to have ≥1 BBN remaining after all 10 payouts
+  // remaining_bitbon = investment/entryPrice * remainingFraction ≥ 1
+  // → investment ≥ entryPrice / remainingFraction
+  const minInvestment = remainingFraction > 0
+    ? Math.ceil(entryPrice / remainingFraction)
+    : null
+
   return {
     rows,
     summary: {
@@ -93,8 +105,75 @@ export function calculateRanges(params) {
       totalPaid,
       remaining,
       roi: (totalPaid / investment) * 100,
+      remainingFraction,
+      meetsRetention,
+      minInvestment,
     },
   }
+}
+
+function RetentionBanner({ summary, params }) {
+  const { remainingFraction, meetsRetention, minInvestment } = summary
+  const pct = (remainingFraction * 100).toFixed(1)
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35 }}
+      className={[
+        'rounded-2xl border px-5 py-4 flex flex-col sm:flex-row sm:items-center gap-4',
+        meetsRetention
+          ? 'bg-emerald-500/5 border-emerald-500/20'
+          : 'bg-red-500/5 border-red-500/20',
+      ].join(' ')}
+    >
+      {/* Status icon */}
+      <div className={[
+        'flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center text-lg',
+        meetsRetention ? 'bg-emerald-500/15' : 'bg-red-500/15',
+      ].join(' ')}>
+        {meetsRetention ? '✓' : '✗'}
+      </div>
+
+      {/* Main info */}
+      <div className="flex-1 min-w-0">
+        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+          <span className="text-sm font-semibold text-zinc-200">
+            Остаток после 10 выплат:
+          </span>
+          <span className={`text-xl font-bold font-mono ${meetsRetention ? 'text-emerald-400' : 'text-red-400'}`}>
+            {pct}%
+          </span>
+          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+            meetsRetention
+              ? 'bg-emerald-500/15 text-emerald-400'
+              : 'bg-red-500/15 text-red-400'
+          }`}>
+            {meetsRetention ? '≥ 10% · условие выполнено' : '< 10% · условие не выполнено'}
+          </span>
+        </div>
+        <p className="text-xs text-zinc-500 mt-1">
+          {meetsRetention
+            ? 'При текущих параметрах остаток Bitbon выше порога 10% при любой сумме инвестиции.'
+            : 'Снизьте «Старт 2-го диапазона» или увеличьте «Шаг диапазона», чтобы уменьшить нагрузку выплат.'}
+        </p>
+      </div>
+
+      {/* Min investment block */}
+      <div className="flex-shrink-0 text-right sm:border-l sm:border-zinc-700 sm:pl-5">
+        <p className="text-xs text-zinc-500 mb-1 uppercase tracking-wider">Мин. инвестиция</p>
+        {minInvestment != null ? (
+          <>
+            <p className="text-xl font-bold font-mono text-indigo-300">${minInvestment}</p>
+            <p className="text-[10px] text-zinc-600 mt-0.5">для ≥ 1 BBN остатка</p>
+          </>
+        ) : (
+          <p className="text-sm font-mono text-red-400">∞</p>
+        )}
+      </div>
+    </motion.div>
+  )
 }
 
 export default function Calculator() {
@@ -185,6 +264,7 @@ export default function Calculator() {
             transition={{ duration: 0.3, delay: 0.1 }}
             className="space-y-6"
           >
+            <RetentionBanner summary={result.summary} params={params} />
             <SummaryCards data={result.summary} />
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
