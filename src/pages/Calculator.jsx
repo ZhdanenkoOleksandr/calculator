@@ -9,7 +9,7 @@ export const DEFAULT_PARAMS = {
   investment: 100,
   entryPrice: 5,
   rangeStep: 10,
-  startPercent: 10,
+  startPercent: 0.1,
 }
 
 const NUM_RANGES = 10

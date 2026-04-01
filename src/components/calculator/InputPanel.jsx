@@ -34,9 +34,9 @@ const FIELDS = [
     key: 'startPercent',
     label: 'Старт 2-го диапазона',
     unit: '%',
-    min: 1,
+    min: 0.1,
     max: 99,
-    step: 1,
+    step: 0.1,
     description: 'Процент выплаты во 2-м диапазоне (далее рост до 100%)',
   },
 ]
@@ -178,7 +178,7 @@ export default function InputPanel({
             </div>
             <div className="flex justify-between mt-1.5 text-[10px] text-zinc-600 font-mono">
               <span>100%</span>
-              <span>{params.startPercent}%→100% (экспонента)</span>
+              <span>{Number(params.startPercent).toFixed(1)}%→100% (экспонента)</span>
               <span>100%</span>
             </div>
           </div>
