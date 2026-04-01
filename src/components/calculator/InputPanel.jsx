@@ -1,7 +1,8 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import { getPayoutSchedule } from '../../pages/Calculator'
+import { getPayoutSchedule, computeAutoStartPercent, RANGE_STEP } from '../../pages/Calculator'
 
+// Only investment and entryPrice are user-controlled
 const FIELDS = [
   {
     key: 'investment',
@@ -20,24 +21,6 @@ const FIELDS = [
     max: 500,
     step: 1,
     description: 'Цена Bitbon при покупке',
-  },
-  {
-    key: 'rangeStep',
-    label: 'Шаг диапазона',
-    unit: 'USD',
-    min: 5,
-    max: 100,
-    step: 5,
-    description: 'Ширина каждого ценового диапазона',
-  },
-  {
-    key: 'startPercent',
-    label: 'Старт 2-го диапазона',
-    unit: '%',
-    min: 1,
-    max: 99,
-    step: 1,
-    description: 'Процент выплаты во 2-м диапазоне (далее рост до 100%)',
   },
 ]
 
@@ -67,8 +50,6 @@ function SliderField({ field, value, onChange }) {
           <span className="text-zinc-500 text-xs w-6">{unit}</span>
         </div>
       </div>
-
-      {/* Track with filled portion */}
       <div className="relative">
         <div
           className="absolute top-1/2 -translate-y-1/2 left-0 h-1.5 rounded-l-full bg-indigo-600 pointer-events-none"
@@ -85,8 +66,23 @@ function SliderField({ field, value, onChange }) {
           style={{ background: 'transparent' }}
         />
       </div>
-
       <p className="text-xs text-zinc-600">{description}</p>
+    </div>
+  )
+}
+
+function StatBadge({ label, value, sub, color = 'zinc' }) {
+  const colors = {
+    zinc:   'bg-zinc-800/60 border-zinc-700/50 text-zinc-300',
+    indigo: 'bg-indigo-500/10 border-indigo-500/20 text-indigo-300',
+    emerald:'bg-emerald-500/10 border-emerald-500/20 text-emerald-300',
+    amber:  'bg-amber-500/10 border-amber-500/20 text-amber-300',
+  }
+  return (
+    <div className={`rounded-xl border px-3 py-2.5 ${colors[color]}`}>
+      <p className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">{label}</p>
+      <p className="font-mono font-bold text-sm">{value}</p>
+      {sub && <p className="text-[10px] text-zinc-600 mt-0.5">{sub}</p>}
     </div>
   )
 }
@@ -98,10 +94,17 @@ export default function InputPanel({
   onSimulate,
   onReset,
   isSimulating,
+  summary,
 }) {
-  const handleChange = (key, value) => {
+  const handleChange = (key, value) =>
     setParams((prev) => ({ ...prev, [key]: value }))
-  }
+
+  // Auto-computed values (reactive to entryPrice)
+  const startPercent = computeAutoStartPercent(params.entryPrice, RANGE_STEP)
+  const schedule = getPayoutSchedule(startPercent)
+  const units = params.investment / params.entryPrice
+  const recommendedInvestment = summary?.recommendedInvestment ?? Math.ceil((params.entryPrice * 100) / 50) * 50
+  const maxPayout = params.investment // 100% of investment (ranges 1 & 10)
 
   return (
     <motion.div
@@ -117,6 +120,7 @@ export default function InputPanel({
         </h2>
       </div>
 
+      {/* User-controlled sliders */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5">
         {FIELDS.map((field) => (
           <SliderField
@@ -128,62 +132,107 @@ export default function InputPanel({
         ))}
       </div>
 
-      {/* Live preview row */}
-      <div className="mt-5 flex flex-wrap gap-3 py-3 px-4 bg-zinc-800/50 rounded-xl border border-zinc-700/50 text-xs font-mono text-zinc-400">
-        <span>
-          Units:{' '}
-          <span className="text-indigo-300 font-semibold">
-            {(params.investment / params.entryPrice).toFixed(4)}
-          </span>{' '}
-          BBN
-        </span>
-        <span className="text-zinc-700">|</span>
-        <span>
-          Диапазонов: <span className="text-amber-400 font-semibold">10</span>
-        </span>
-        <span className="text-zinc-700">|</span>
-        <span>
-          Шаг: <span className="text-amber-400 font-semibold">${params.rangeStep}</span>
-        </span>
+      {/* Auto-computed constants */}
+      <div className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <StatBadge
+          label="Старт 2-го диапазона"
+          value={`${startPercent.toFixed(2)}%`}
+          sub="авто · 1%→10%"
+          color="indigo"
+        />
+        <StatBadge
+          label="Шаг диапазона"
+          value={`$${RANGE_STEP}`}
+          sub="константа"
+          color="zinc"
+        />
+        <StatBadge
+          label="Диапазонов"
+          value="10"
+          sub="константа"
+          color="zinc"
+        />
+        <StatBadge
+          label="Остаток BBN"
+          value={`${((summary?.remainingFraction ?? 0.075) * 100).toFixed(1)}%`}
+          sub="цель: 5–10%"
+          color="emerald"
+        />
       </div>
 
-      {/* Payout schedule visual — reactive to startPercent */}
-      {(() => {
-        const schedule = getPayoutSchedule(params.startPercent)
-        return (
-          <div className="mt-4 p-4 bg-zinc-800/30 rounded-xl border border-zinc-800">
-            <p className="text-xs text-zinc-500 uppercase tracking-wider mb-3 font-semibold">
-              График выплат по диапазонам
+      {/* Recommended investment & max payout */}
+      <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="bg-indigo-500/5 border border-indigo-500/15 rounded-xl px-4 py-3 flex items-center justify-between">
+          <div>
+            <p className="text-[10px] text-zinc-500 uppercase tracking-wider">
+              Рекомендуемый размер инвестиции
             </p>
-            <div className="flex items-end gap-1 h-12">
-              {schedule.map((pct, i) => {
-                const isFirst = i === 0
-                const isLast = i === schedule.length - 1
-                const heightPct = (pct / 100) * 100
-                return (
-                  <div key={i} className="flex-1 flex flex-col items-center gap-1 group relative">
-                    <div
-                      className={[
-                        'w-full rounded-t transition-all duration-200',
-                        isFirst || isLast ? 'bg-emerald-500/70' : 'bg-indigo-500/60',
-                      ].join(' ')}
-                      style={{ height: `${heightPct}%` }}
-                    />
-                    <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] text-zinc-300 bg-zinc-700 px-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                      {pct.toFixed(1)}%
-                    </span>
-                  </div>
-                )
-              })}
-            </div>
-            <div className="flex justify-between mt-1.5 text-[10px] text-zinc-600 font-mono">
-              <span>100%</span>
-              <span>{params.startPercent}%→100% (экспонента)</span>
-              <span>100%</span>
-            </div>
+            <p className="text-xs text-zinc-500 mt-0.5">при цене ${params.entryPrice} · ≈100 BBN</p>
           </div>
-        )
-      })()}
+          <p className="text-2xl font-bold font-mono text-indigo-300">
+            ${recommendedInvestment}
+          </p>
+        </div>
+
+        <div className="bg-emerald-500/5 border border-emerald-500/15 rounded-xl px-4 py-3 flex items-center justify-between">
+          <div>
+            <p className="text-[10px] text-zinc-500 uppercase tracking-wider">
+              Максимальная выплата
+            </p>
+            <p className="text-xs text-zinc-500 mt-0.5">диапазоны 1 и 10 · 100%</p>
+          </div>
+          <p className="text-2xl font-bold font-mono text-emerald-300">
+            ${maxPayout.toLocaleString('ru-RU')}
+          </p>
+        </div>
+      </div>
+
+      {/* Payout schedule mini-chart */}
+      <div className="mt-4 p-4 bg-zinc-800/30 rounded-xl border border-zinc-800">
+        <p className="text-xs text-zinc-500 uppercase tracking-wider mb-3 font-semibold">
+          График выплат по диапазонам
+        </p>
+        <div className="flex items-end gap-1 h-12">
+          {schedule.map((pct, i) => {
+            const isFirst = i === 0
+            const isLast = i === schedule.length - 1
+            return (
+              <div key={i} className="flex-1 flex flex-col items-center group relative">
+                <div
+                  className={[
+                    'w-full rounded-t transition-all duration-200',
+                    isFirst || isLast ? 'bg-emerald-500/70' : 'bg-indigo-500/60',
+                  ].join(' ')}
+                  style={{ height: `${pct}%` }}
+                />
+                <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] text-zinc-300 bg-zinc-700 px-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                  {pct.toFixed(1)}%
+                </span>
+              </div>
+            )
+          })}
+        </div>
+        <div className="flex justify-between mt-1.5 text-[10px] text-zinc-600 font-mono">
+          <span>100%</span>
+          <span>{startPercent.toFixed(2)}%→100% (авто)</span>
+          <span>100%</span>
+        </div>
+      </div>
+
+      {/* Live preview */}
+      <div className="mt-4 flex flex-wrap gap-3 py-2.5 px-4 bg-zinc-800/50 rounded-xl border border-zinc-700/50 text-xs font-mono text-zinc-400">
+        <span>
+          Units: <span className="text-indigo-300 font-semibold">{units.toFixed(4)}</span> BBN
+        </span>
+        <span className="text-zinc-700">|</span>
+        <span>
+          Куплено за: <span className="text-zinc-300">${params.investment}</span>
+        </span>
+        <span className="text-zinc-700">|</span>
+        <span>
+          Цена: <span className="text-amber-400">${params.entryPrice}</span>
+        </span>
+      </div>
 
       {/* Action buttons */}
       <div className="mt-5 flex flex-wrap gap-3">
@@ -196,7 +245,6 @@ export default function InputPanel({
         >
           Рассчитать
         </button>
-
         <button
           onClick={onSimulate}
           disabled={isSimulating}
@@ -219,12 +267,10 @@ export default function InputPanel({
             </>
           )}
         </button>
-
         <button
           onClick={onReset}
           className="px-4 py-2.5 bg-transparent hover:bg-zinc-800 border border-zinc-700
-                     text-zinc-400 hover:text-zinc-200 font-semibold text-sm rounded-xl
-                     transition-colors"
+                     text-zinc-400 hover:text-zinc-200 font-semibold text-sm rounded-xl transition-colors"
         >
           Сброс
         </button>

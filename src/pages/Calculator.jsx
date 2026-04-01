@@ -8,27 +8,72 @@ import PayoutChart from '../components/calculator/PayoutChart'
 export const DEFAULT_PARAMS = {
   investment: 100,
   entryPrice: 5,
-  rangeStep: 10,
-  startPercent: 10,
 }
+
+// Range step is a fixed model constant — no slider
+export const RANGE_STEP = 10
 
 const NUM_RANGES = 10
 
 // Payout schedule (% of investment) for each of the 10 ranges:
-// Range 1:    100% (full recovery, in the first range above entry)
-// Ranges 2–10: exponential from startPercent → 100%
-//              formula: startPercent × (100/startPercent)^(i/8), i=0..8
-export function getPayoutSchedule(startPercent = 10) {
-  const schedule = [100] // range 1: 100%
+// Range 1:    100%
+// Ranges 2–10: exponential startPercent → 100%  (startPercent × (100/startPercent)^(i/8), i=0..8)
+// Guarantee: range 10 % > range 9 % (always true when startPercent < 100)
+export function getPayoutSchedule(startPercent) {
   const ratio = 100 / startPercent
+  const schedule = [100] // range 1
   for (let i = 0; i <= 8; i++) {
     schedule.push(startPercent * Math.pow(ratio, i / 8))
   }
-  return schedule // 10 values total
+  return schedule
+}
+
+// Auto-calculate startPercent ∈ [1%, 10%] via binary search
+// so that remaining Bitbon ≈ TARGET_RETENTION (7.5%, midpoint of 5–10%)
+// Condition: range-10 payout > range-9 payout — always satisfied since ratio > 1
+export const TARGET_RETENTION = 0.075
+export function computeAutoStartPercent(entryPrice, rangeStep = RANGE_STEP) {
+  const entryRangeIndex = Math.floor(entryPrice / rangeStep)
+  const firstPayoutRangeIndex = entryRangeIndex + 1
+  const firstPayoutPrice = firstPayoutRangeIndex * rangeStep + entryPrice
+
+  // Prices for all 10 payout ranges
+  const prices = [firstPayoutPrice]
+  for (let i = 0; i <= 8; i++) {
+    prices.push((firstPayoutRangeIndex + 1 + i) * rangeStep)
+  }
+
+  // remainingFraction = 1 - entryPrice × Σ(pct_i / 100 / price_i)
+  function calcRetention(sp) {
+    let sum = 1.0 / prices[0] // range 1: 100%
+    const ratio = 100 / sp
+    for (let i = 0; i <= 8; i++) {
+      sum += (sp * Math.pow(ratio, i / 8)) / 100 / prices[i + 1]
+    }
+    return 1 - entryPrice * sum
+  }
+
+  const MIN_SP = 1.0
+  const MAX_SP = 10.0
+
+  // Clamp if target is outside [MIN_SP, MAX_SP] range
+  if (calcRetention(MIN_SP) <= TARGET_RETENTION) return MIN_SP
+  if (calcRetention(MAX_SP) >= TARGET_RETENTION) return MAX_SP
+
+  // Binary search — calcRetention is strictly decreasing in sp
+  let lo = MIN_SP, hi = MAX_SP
+  for (let iter = 0; iter < 64; iter++) {
+    const mid = (lo + hi) / 2
+    if (calcRetention(mid) > TARGET_RETENTION) lo = mid
+    else hi = mid
+  }
+  return Math.round(((lo + hi) / 2) * 100) / 100
 }
 
 export function calculateRanges(params) {
-  const { investment, entryPrice, rangeStep, startPercent } = params
+  const { investment, entryPrice } = params
+  const rangeStep = RANGE_STEP
+  const startPercent = computeAutoStartPercent(entryPrice, rangeStep)
   const units = investment / entryPrice
   const schedule = getPayoutSchedule(startPercent)
 
@@ -36,8 +81,6 @@ export function calculateRanges(params) {
   const entryRangeLow = entryRangeIndex * rangeStep
   const entryRangeHigh = entryRangeLow + rangeStep
 
-  // First payout is in the very next range above entry
-  // Price = lower boundary of that range + entryPrice  (e.g. 10 + 6 = 16)
   const firstPayoutRangeIndex = entryRangeIndex + 1
   const firstPayoutPrice = firstPayoutRangeIndex * rangeStep + entryPrice
 
@@ -65,7 +108,6 @@ export function calculateRanges(params) {
     const payoutPct = schedule[i]
     const payoutUsdTarget = investment * (payoutPct / 100)
 
-    // Clamp to remaining — always add the row even if remaining is 0
     const payoutBitbon = remaining > 0
       ? Math.min(payoutUsdTarget / currentPrice, remaining)
       : 0
@@ -86,17 +128,13 @@ export function calculateRanges(params) {
     })
   }
 
-  // remainingFraction is INDEPENDENT of investment amount —
-  // it is determined solely by entryPrice, rangeStep, startPercent.
   const remainingFraction = units > 0 ? remaining / units : 0
-  const meetsRetention = remainingFraction >= 0.1
 
-  // Minimum investment to have ≥1 BBN remaining after all 10 payouts
-  // remaining_bitbon = investment/entryPrice * remainingFraction ≥ 1
-  // → investment ≥ entryPrice / remainingFraction
-  const minInvestment = remainingFraction > 0
-    ? Math.ceil(entryPrice / remainingFraction)
-    : null
+  // Recommended investment: buy ~100 Bitbon at entry price, rounded to nearest $50
+  const recommendedInvestment = Math.ceil((entryPrice * 100) / 50) * 50
+
+  // Max payout per period = 100% of investment (ranges 1 and 10)
+  const maxPayout = investment
 
   return {
     rows,
@@ -106,74 +144,11 @@ export function calculateRanges(params) {
       remaining,
       roi: (totalPaid / investment) * 100,
       remainingFraction,
-      meetsRetention,
-      minInvestment,
+      startPercent,
+      recommendedInvestment,
+      maxPayout,
     },
   }
-}
-
-function RetentionBanner({ summary, params }) {
-  const { remainingFraction, meetsRetention, minInvestment } = summary
-  const pct = (remainingFraction * 100).toFixed(1)
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 6 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35 }}
-      className={[
-        'rounded-2xl border px-5 py-4 flex flex-col sm:flex-row sm:items-center gap-4',
-        meetsRetention
-          ? 'bg-emerald-500/5 border-emerald-500/20'
-          : 'bg-red-500/5 border-red-500/20',
-      ].join(' ')}
-    >
-      {/* Status icon */}
-      <div className={[
-        'flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center text-lg',
-        meetsRetention ? 'bg-emerald-500/15' : 'bg-red-500/15',
-      ].join(' ')}>
-        {meetsRetention ? '✓' : '✗'}
-      </div>
-
-      {/* Main info */}
-      <div className="flex-1 min-w-0">
-        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-          <span className="text-sm font-semibold text-zinc-200">
-            Остаток после 10 выплат:
-          </span>
-          <span className={`text-xl font-bold font-mono ${meetsRetention ? 'text-emerald-400' : 'text-red-400'}`}>
-            {pct}%
-          </span>
-          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-            meetsRetention
-              ? 'bg-emerald-500/15 text-emerald-400'
-              : 'bg-red-500/15 text-red-400'
-          }`}>
-            {meetsRetention ? '≥ 10% · условие выполнено' : '< 10% · условие не выполнено'}
-          </span>
-        </div>
-        <p className="text-xs text-zinc-500 mt-1">
-          {meetsRetention
-            ? 'При текущих параметрах остаток Bitbon выше порога 10% при любой сумме инвестиции.'
-            : 'Снизьте «Старт 2-го диапазона» или увеличьте «Шаг диапазона», чтобы уменьшить нагрузку выплат.'}
-        </p>
-      </div>
-
-      {/* Min investment block */}
-      <div className="flex-shrink-0 text-right sm:border-l sm:border-zinc-700 sm:pl-5">
-        <p className="text-xs text-zinc-500 mb-1 uppercase tracking-wider">Мин. инвестиция</p>
-        {minInvestment != null ? (
-          <>
-            <p className="text-xl font-bold font-mono text-indigo-300">${minInvestment}</p>
-            <p className="text-[10px] text-zinc-600 mt-0.5">для ≥ 1 BBN остатка</p>
-          </>
-        ) : (
-          <p className="text-sm font-mono text-red-400">∞</p>
-        )}
-      </div>
-    </motion.div>
-  )
 }
 
 export default function Calculator() {
@@ -192,12 +167,10 @@ export default function Calculator() {
 
   const handleSimulate = useCallback(() => {
     if (simRef.current) clearInterval(simRef.current)
-
     const data = calculateRanges(params)
     setResult(data)
     setIsSimulating(true)
     setActiveRow(0)
-
     let idx = 0
     simRef.current = setInterval(() => {
       idx++
@@ -221,7 +194,6 @@ export default function Calculator() {
 
   return (
     <div className="min-h-screen bg-zinc-950 font-inter">
-      {/* Header */}
       <header className="border-b border-zinc-800/60">
         <div className="max-w-6xl mx-auto px-4 py-6 md:py-8">
           <motion.div
@@ -234,8 +206,7 @@ export default function Calculator() {
                 <span className="text-white font-bold text-base font-mono">B</span>
               </div>
               <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-white">
-                Bitbon{' '}
-                <span className="text-indigo-400">Range Economy</span>
+                Bitbon <span className="text-indigo-400">Range Economy</span>
               </h1>
             </div>
             <p className="text-zinc-400 text-sm md:text-base max-w-xl leading-relaxed">
@@ -246,7 +217,6 @@ export default function Calculator() {
         </div>
       </header>
 
-      {/* Main content */}
       <main className="max-w-6xl mx-auto px-4 py-6 md:py-10 space-y-6">
         <InputPanel
           params={params}
@@ -255,6 +225,7 @@ export default function Calculator() {
           onSimulate={handleSimulate}
           onReset={handleReset}
           isSimulating={isSimulating}
+          summary={result?.summary}
         />
 
         {result && (
@@ -264,9 +235,7 @@ export default function Calculator() {
             transition={{ duration: 0.3, delay: 0.1 }}
             className="space-y-6"
           >
-            <RetentionBanner summary={result.summary} params={params} />
             <SummaryCards data={result.summary} />
-
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <ResultsTable rows={result.rows} activeRow={activeRow} />
               <PayoutChart rows={result.rows} activeRow={activeRow} />
@@ -275,7 +244,6 @@ export default function Calculator() {
         )}
       </main>
 
-      {/* Footer */}
       <footer className="border-t border-zinc-800/60 mt-12">
         <div className="max-w-6xl mx-auto px-4 py-5 text-center">
           <p className="text-xs text-zinc-600 font-mono">
