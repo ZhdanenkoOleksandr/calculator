@@ -63,7 +63,7 @@ export default function PayoutChart({ rows, activeRow }) {
   // Skip entry and transition rows (no payout), build chart only for payout rows
   const data = rows
     .map((row, originalIdx) => ({ ...row, originalIdx }))
-    .filter((row) => !row.isEntry && !row.isTransition)
+    .filter((row) => !row.isEntry)
     .map((row) => ({
       name: row.range,
       'Выплата $': parseFloat(row.payoutUsd.toFixed(2)),

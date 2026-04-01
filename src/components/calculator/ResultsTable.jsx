@@ -42,8 +42,8 @@ export default function ResultsTable({ rows, activeRow }) {
               {rows.map((row, idx) => {
                 const isActive = activeRow === idx
                 const isEntry = row.isEntry
-                const isTransition = row.isTransition
                 const isFirstPayout = row.isFirstPayout
+                const isLastPayout = row.isLastPayout
 
                 return (
                   <motion.tr
@@ -57,9 +57,7 @@ export default function ResultsTable({ rows, activeRow }) {
                         ? 'bg-indigo-500/15 border-indigo-500/30'
                         : isEntry
                         ? 'bg-zinc-800/30'
-                        : isTransition
-                        ? 'bg-zinc-800/10 opacity-60'
-                        : isFirstPayout
+                        : isFirstPayout || isLastPayout
                         ? 'bg-emerald-500/5'
                         : 'hover:bg-zinc-800/40',
                     ].join(' ')}
@@ -76,7 +74,7 @@ export default function ResultsTable({ rows, activeRow }) {
                         )}
                         <span
                           className={
-                            isEntry || isTransition
+                            isEntry
                               ? 'text-zinc-500'
                               : isActive
                               ? 'text-indigo-300 font-semibold'
@@ -90,12 +88,12 @@ export default function ResultsTable({ rows, activeRow }) {
                             вход
                           </span>
                         )}
-                        {isTransition && (
-                          <span className="text-[10px] px-1.5 py-0.5 bg-zinc-800 text-zinc-600 rounded font-sans">
-                            проход
+                        {isFirstPayout && (
+                          <span className="text-[10px] px-1.5 py-0.5 bg-emerald-900/60 text-emerald-400 rounded font-sans">
+                            100%
                           </span>
                         )}
-                        {isFirstPayout && (
+                        {isLastPayout && (
                           <span className="text-[10px] px-1.5 py-0.5 bg-emerald-900/60 text-emerald-400 rounded font-sans">
                             100%
                           </span>
@@ -106,9 +104,7 @@ export default function ResultsTable({ rows, activeRow }) {
                     {/* Price */}
                     <td className="px-4 py-3 font-mono text-xs whitespace-nowrap">
                       {row.price != null ? (
-                        <span className={isTransition ? 'text-zinc-600' : 'text-zinc-300'}>
-                          ${fmt(row.price, 2)}
-                        </span>
+                        <span className="text-zinc-300">${fmt(row.price, 2)}</span>
                       ) : (
                         <span className="text-zinc-700">—</span>
                       )}

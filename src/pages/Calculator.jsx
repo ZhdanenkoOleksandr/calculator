@@ -14,16 +14,15 @@ export const DEFAULT_PARAMS = {
 const NUM_RANGES = 10
 
 // Payout schedule (% of investment) for each of the 10 ranges:
-// Range 1:   100% (full recovery)
-// Ranges 2–9: exponential from 10% → 90% (geometric: 10% × 9^(i/7))
-// Range 10:  100% (final payout)
+// Range 1:    100% (full recovery, in the first range above entry)
+// Ranges 2–10: exponential from 10% → 100% (geometric: 10% × 10^(i/8), i=0..8)
 export function getPayoutSchedule() {
-  const schedule = [100] // range 1
-  for (let i = 0; i < 8; i++) {
-    schedule.push(10 * Math.pow(9, i / 7)) // ~10%, 13.7%, 18.75% … 90%
+  const schedule = [100] // range 1: 100%
+  for (let i = 0; i <= 8; i++) {
+    // 9 values: 10% × 10^(i/8) → 10%, ~13.3%, ~17.8%, ~23.7%, ~31.6%, ~42.2%, ~56.2%, ~75%, 100%
+    schedule.push(10 * Math.pow(10, i / 8))
   }
-  schedule.push(100) // range 10
-  return schedule
+  return schedule // 10 values total
 }
 
 export function calculateRanges(params) {
@@ -35,11 +34,9 @@ export function calculateRanges(params) {
   const entryRangeLow = entryRangeIndex * rangeStep
   const entryRangeHigh = entryRangeLow + rangeStep
 
-  const transRangeIndex = entryRangeIndex + 1
-  const transRangeLow = transRangeIndex * rangeStep
-  const transRangeHigh = transRangeLow + rangeStep
-
-  const firstPayoutRangeIndex = entryRangeIndex + 2
+  // First payout is in the very next range above entry
+  // Price = lower boundary of that range + entryPrice  (e.g. 10 + 6 = 16)
+  const firstPayoutRangeIndex = entryRangeIndex + 1
   const firstPayoutPrice = firstPayoutRangeIndex * rangeStep + entryPrice
 
   const rows = [
@@ -51,15 +48,6 @@ export function calculateRanges(params) {
       remaining: units,
       payoutPct: null,
       isEntry: true,
-    },
-    {
-      range: `${transRangeLow}–${transRangeHigh}`,
-      price: null,
-      payoutUsd: 0,
-      payoutBitbon: 0,
-      remaining: units,
-      payoutPct: null,
-      isTransition: true,
     },
   ]
 
@@ -75,7 +63,7 @@ export function calculateRanges(params) {
     const payoutPct = schedule[i]
     const payoutUsdTarget = investment * (payoutPct / 100)
 
-    // Clamp to remaining — but always add the row (remaining may be 0)
+    // Clamp to remaining — always add the row even if remaining is 0
     const payoutBitbon = remaining > 0
       ? Math.min(payoutUsdTarget / currentPrice, remaining)
       : 0

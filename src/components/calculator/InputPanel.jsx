@@ -155,7 +155,7 @@ export default function InputPanel({
                 <div
                   className={[
                     'w-full rounded-t transition-all',
-                    isFirst || isLast ? 'bg-emerald-500/70' : 'bg-indigo-500/60',
+                    isFirst ? 'bg-emerald-500/70' : isLast ? 'bg-emerald-500/70' : 'bg-indigo-500/60',
                   ].join(' ')}
                   style={{ height: `${heightPct}%` }}
                 />
@@ -169,7 +169,7 @@ export default function InputPanel({
         </div>
         <div className="flex justify-between mt-1.5 text-[10px] text-zinc-600 font-mono">
           <span>100%</span>
-          <span>10%→90% (экспонента)</span>
+          <span>10%→100% (экспонента)</span>
           <span>100%</span>
         </div>
       </div>
