@@ -17,12 +17,21 @@ const NUM_RANGES = 10
 export function calculateRanges(params) {
   const { investment, entryPrice, rangeStep, payoutPercent } = params
   const units = investment / entryPrice
-  const payoutUsd = investment * (payoutPercent / 100)
 
-  // Determine which range the entry price falls into
+  // Entry range: the range where entryPrice falls
   const entryRangeIndex = Math.floor(entryPrice / rangeStep)
   const entryRangeLow = entryRangeIndex * rangeStep
   const entryRangeHigh = entryRangeLow + rangeStep
+
+  // Transition range (no payout): one range above entry
+  const transRangeIndex = entryRangeIndex + 1
+  const transRangeLow = transRangeIndex * rangeStep
+  const transRangeHigh = transRangeLow + rangeStep
+
+  // First payout range: two above entry
+  // Price = lower boundary of that range + entryPrice (e.g. 20 + 6 = 26)
+  const firstPayoutRangeIndex = entryRangeIndex + 2
+  const firstPayoutPrice = firstPayoutRangeIndex * rangeStep + entryPrice
 
   const rows = [
     {
@@ -33,6 +42,14 @@ export function calculateRanges(params) {
       remaining: units,
       isEntry: true,
     },
+    {
+      range: `${transRangeLow}–${transRangeHigh}`,
+      price: null,
+      payoutUsd: 0,
+      payoutBitbon: 0,
+      remaining: units,
+      isTransition: true,
+    },
   ]
 
   let remaining = units
@@ -41,14 +58,18 @@ export function calculateRanges(params) {
   for (let i = 0; i < NUM_RANGES; i++) {
     if (remaining <= 0) break
 
-    // Each payout triggers at the lower boundary of the next range
-    const rangeIndex = entryRangeIndex + 1 + i
+    const rangeIndex = firstPayoutRangeIndex + i
     const rangeLow = rangeIndex * rangeStep
     const rangeHigh = rangeLow + rangeStep
-    const currentPrice = rangeLow
 
-    // How many Bitbon this payout costs at this price
-    const payoutBitbon = Math.min(payoutUsd / currentPrice, remaining)
+    // First payout: 100% of investment at special price
+    // Subsequent: payoutPercent% at lower boundary of each range
+    const currentPrice = i === 0 ? firstPayoutPrice : rangeLow
+    const payoutUsdTarget = i === 0
+      ? investment                              // 100% recovery
+      : investment * (payoutPercent / 100)      // configured %
+
+    const payoutBitbon = Math.min(payoutUsdTarget / currentPrice, remaining)
     const actualPayoutUsd = payoutBitbon * currentPrice
 
     remaining -= payoutBitbon
@@ -60,6 +81,7 @@ export function calculateRanges(params) {
       payoutUsd: actualPayoutUsd,
       payoutBitbon,
       remaining: Math.max(remaining, 0),
+      isFirstPayout: i === 0,
     })
 
     if (remaining <= 0) break

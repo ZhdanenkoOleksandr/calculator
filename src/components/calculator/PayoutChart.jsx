@@ -60,13 +60,17 @@ function CustomLegend({ payload }) {
 }
 
 export default function PayoutChart({ rows, activeRow }) {
-  // Skip entry row (idx 0), only show payout rows
-  const data = rows.slice(1).map((row, i) => ({
-    name: row.range,
-    'Выплата $': parseFloat(row.payoutUsd.toFixed(2)),
-    'Остаток BBN': parseFloat(row.remaining.toFixed(4)),
-    idx: i + 1, // matches activeRow index in original rows array
-  }))
+  // Skip entry and transition rows (no payout), build chart only for payout rows
+  const data = rows
+    .map((row, originalIdx) => ({ ...row, originalIdx }))
+    .filter((row) => !row.isEntry && !row.isTransition)
+    .map((row) => ({
+      name: row.range,
+      'Выплата $': parseFloat(row.payoutUsd.toFixed(2)),
+      'Остаток BBN': parseFloat(row.remaining.toFixed(4)),
+      isFirstPayout: row.isFirstPayout,
+      idx: row.originalIdx, // matches activeRow index in original rows array
+    }))
 
   if (!data.length) return null
 
@@ -132,10 +136,10 @@ export default function PayoutChart({ rows, activeRow }) {
             <Legend content={<CustomLegend />} />
 
             {/* Active range reference line */}
-            {activeRow > 0 && data[activeRow - 1] && (
+            {activeRow > 1 && data.find((d) => d.idx === activeRow) && (
               <ReferenceLine
                 yAxisId="left"
-                x={data[activeRow - 1].name}
+                x={data.find((d) => d.idx === activeRow).name}
                 stroke="#6366f1"
                 strokeWidth={2}
                 strokeDasharray="4 2"
@@ -153,7 +157,9 @@ export default function PayoutChart({ rows, activeRow }) {
                 <Cell
                   key={entry.name}
                   fill={
-                    activeRow > 0 && entry.idx === activeRow
+                    entry.isFirstPayout
+                      ? activeRow > 0 && entry.idx === activeRow ? '#6ee7b7' : '#10b981'
+                      : activeRow > 0 && entry.idx === activeRow
                       ? '#818cf8'
                       : '#6366f1'
                   }
