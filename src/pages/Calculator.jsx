@@ -210,10 +210,7 @@ export default function Calculator() {
               <PayoutChart rows={result.rows} activeRow={activeRow} />
             </div>
 
-            <Layer2Accumulation
-              remainingBitbon={result.summary.remaining}
-              entryPrice={params.entryPrice}
-            />
+            <Layer2Accumulation rows={result.rows} />
           </motion.div>
         )}
       </main>
