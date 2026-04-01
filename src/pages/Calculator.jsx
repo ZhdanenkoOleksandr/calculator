@@ -4,6 +4,7 @@ import InputPanel from '../components/calculator/InputPanel'
 import SummaryCards from '../components/calculator/SummaryCards'
 import ResultsTable from '../components/calculator/ResultsTable'
 import PayoutChart from '../components/calculator/PayoutChart'
+import Layer2Accumulation from '../components/calculator/Layer2Accumulation'
 
 export const DEFAULT_PARAMS = {
   investment: 100,
@@ -28,52 +29,20 @@ export function getPayoutSchedule(startPercent) {
   return schedule
 }
 
-// Auto-calculate startPercent ∈ [1%, 10%] via binary search
-// so that remaining Bitbon ≈ TARGET_RETENTION (7.5%, midpoint of 5–10%)
-// Condition: range-10 payout > range-9 payout — always satisfied since ratio > 1
-export const TARGET_RETENTION = 0.075
-export function computeAutoStartPercent(entryPrice, rangeStep = RANGE_STEP) {
-  const entryRangeIndex = Math.floor(entryPrice / rangeStep)
-  const firstPayoutRangeIndex = entryRangeIndex + 1
-  const firstPayoutPrice = firstPayoutRangeIndex * rangeStep + entryPrice
-
-  // Prices for all 10 payout ranges
-  const prices = [firstPayoutPrice]
-  for (let i = 0; i <= 8; i++) {
-    prices.push((firstPayoutRangeIndex + 1 + i) * rangeStep)
-  }
-
-  // remainingFraction = 1 - entryPrice × Σ(pct_i / 100 / price_i)
-  function calcRetention(sp) {
-    let sum = 1.0 / prices[0] // range 1: 100%
-    const ratio = 100 / sp
-    for (let i = 0; i <= 8; i++) {
-      sum += (sp * Math.pow(ratio, i / 8)) / 100 / prices[i + 1]
-    }
-    return 1 - entryPrice * sum
-  }
-
-  const MIN_SP = 1.0
-  const MAX_SP = 10.0
-
-  // Clamp if target is outside [MIN_SP, MAX_SP] range
-  if (calcRetention(MIN_SP) <= TARGET_RETENTION) return MIN_SP
-  if (calcRetention(MAX_SP) >= TARGET_RETENTION) return MAX_SP
-
-  // Binary search — calcRetention is strictly decreasing in sp
-  let lo = MIN_SP, hi = MAX_SP
-  for (let iter = 0; iter < 64; iter++) {
-    const mid = (lo + hi) / 2
-    if (calcRetention(mid) > TARGET_RETENTION) lo = mid
-    else hi = mid
-  }
-  return Math.round(((lo + hi) / 2) * 100) / 100
+// startPercent depends ONLY on investment:
+// $10 → 10%,  $10 000 → 1%  (log-linear, clamped to [1%, 10%])
+export function computeAutoStartPercent(investment) {
+  const t = Math.log(Math.max(10, investment) / 10) / Math.log(1000)
+  const raw = 10 * Math.pow(0.1, Math.min(1, t))
+  return Math.max(1, Math.min(10, Math.round(raw * 100) / 100))
 }
+
+export const TARGET_RETENTION = 0.075
 
 export function calculateRanges(params) {
   const { investment, entryPrice } = params
   const rangeStep = RANGE_STEP
-  const startPercent = computeAutoStartPercent(entryPrice, rangeStep)
+  const startPercent = computeAutoStartPercent(investment)
   const units = investment / entryPrice
   const schedule = getPayoutSchedule(startPercent)
 
@@ -240,6 +209,11 @@ export default function Calculator() {
               <ResultsTable rows={result.rows} activeRow={activeRow} />
               <PayoutChart rows={result.rows} activeRow={activeRow} />
             </div>
+
+            <Layer2Accumulation
+              remainingBitbon={result.summary.remaining}
+              entryPrice={params.entryPrice}
+            />
           </motion.div>
         )}
       </main>
