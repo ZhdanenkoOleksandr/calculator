@@ -16,11 +16,13 @@ export const RANGE_STEP = 10
 
 const NUM_RANGES = 10
 
-// Payout schedule (% of investment) for each of the 10 ranges:
-// Range 1:    100%
-// Ranges 2–10: exponential startPercent → 100%  (startPercent × (100/startPercent)^(i/8), i=0..8)
-// Guarantee: range 10 % > range 9 % (always true when startPercent < 100)
-export function getPayoutSchedule(startPercent) {
+// startPercent is always fixed at 1%: parabolic growth 1% → 100% across ranges 2–10
+export const FIXED_START_PERCENT = 1.0
+
+// Payout schedule (% of investment):
+// Range 1:    100% (first payout at entry+1 range)
+// Ranges 2–10: parabolic 1% → 100%  (1 × (100)^(i/8), i=0..8)
+export function getPayoutSchedule(startPercent = FIXED_START_PERCENT) {
   const ratio = 100 / startPercent
   const schedule = [100] // range 1
   for (let i = 0; i <= 8; i++) {
@@ -29,108 +31,102 @@ export function getPayoutSchedule(startPercent) {
   return schedule
 }
 
-// startPercent is auto-computed via binary search so that remaining BBN ≈ 15% of initial
-// (midpoint of 10–20%). Depends only on entryPrice + rangeStep — NOT on investment amount.
-export const TARGET_RETENTION = 0.15
-
-export function computeAutoStartPercent(entryPrice, rangeStep = RANGE_STEP) {
-  const entryRangeIndex = Math.floor(entryPrice / rangeStep)
-  const firstPayoutRangeIndex = entryRangeIndex + 1
-  const firstPayoutPrice = firstPayoutRangeIndex * rangeStep + (entryPrice % rangeStep)
-
-  // Prices for all 10 payout events
-  const prices = [firstPayoutPrice]
-  for (let i = 0; i <= 8; i++) {
-    prices.push((firstPayoutRangeIndex + 1 + i) * rangeStep)
-  }
-
-  // Retention fraction is investment-independent: 1 - entryPrice × Σ(pct_i/100 / price_i)
-  function calcRetention(sp) {
-    const ratio = 100 / sp
-    let sum = 1.0 / prices[0] // range 1: 100%
-    for (let i = 0; i <= 8; i++) {
-      sum += (sp * Math.pow(ratio, i / 8)) / 100 / prices[i + 1]
-    }
-    return 1 - entryPrice * sum
-  }
-
-  const MIN_SP = 1.0, MAX_SP = 10.0
-  if (calcRetention(MIN_SP) <= TARGET_RETENTION) return MIN_SP
-  if (calcRetention(MAX_SP) >= TARGET_RETENTION) return MAX_SP
-
-  let lo = MIN_SP, hi = MAX_SP
-  for (let iter = 0; iter < 64; iter++) {
-    const mid = (lo + hi) / 2
-    if (calcRetention(mid) > TARGET_RETENTION) lo = mid
-    else hi = mid
-  }
-  return Math.round(((lo + hi) / 2) * 100) / 100
-}
-
 export function calculateRanges(params) {
   const { investment, entryPrice } = params
   const rangeStep = RANGE_STEP
-  const startPercent = computeAutoStartPercent(entryPrice, rangeStep)
   const units = investment / entryPrice
-  const schedule = getPayoutSchedule(startPercent)
+  const schedule = getPayoutSchedule(FIXED_START_PERCENT)
 
   const entryRangeIndex = Math.floor(entryPrice / rangeStep)
   const entryRangeLow = entryRangeIndex * rangeStep
   const entryRangeHigh = entryRangeLow + rangeStep
-
   const firstPayoutRangeIndex = entryRangeIndex + 1
   const firstPayoutPrice = firstPayoutRangeIndex * rangeStep + (entryPrice % rangeStep)
 
-  const rows = [
-    {
-      range: `Вход (${entryRangeLow}–${entryRangeHigh})`,
-      price: entryPrice,
-      payoutUsd: 0,
-      payoutBitbon: 0,
-      remaining: units,
-      payoutPct: null,
-      isEntry: true,
-    },
-  ]
+  const entryRow = {
+    range: `Вход (${entryRangeLow}–${entryRangeHigh})`,
+    price: entryPrice,
+    payoutUsd: 0,
+    payoutBitbon: 0,
+    remaining: units,
+    payoutPct: null,
+    isEntry: true,
+  }
 
-  let remaining = units
-  let totalPaid = 0
+  // --- 10 parabolic periods ---
+  let rem10 = units
+  let paid10 = 0
+  const parabolicRows = []
 
   for (let i = 0; i < NUM_RANGES; i++) {
     const rangeIndex = firstPayoutRangeIndex + i
     const rangeLow = rangeIndex * rangeStep
     const rangeHigh = rangeLow + rangeStep
-
     const currentPrice = i === 0 ? firstPayoutPrice : rangeLow
     const payoutPct = schedule[i]
     const payoutUsdTarget = investment * (payoutPct / 100)
-
-    const payoutBitbon = remaining > 0
-      ? Math.min(payoutUsdTarget / currentPrice, remaining)
-      : 0
+    const payoutBitbon = rem10 > 0 ? Math.min(payoutUsdTarget / currentPrice, rem10) : 0
     const actualPayoutUsd = payoutBitbon * currentPrice
-
-    remaining = Math.max(remaining - payoutBitbon, 0)
-    totalPaid += actualPayoutUsd
-
-    rows.push({
+    rem10 = Math.max(rem10 - payoutBitbon, 0)
+    paid10 += actualPayoutUsd
+    parabolicRows.push({
       range: `${rangeLow}–${rangeHigh}`,
       price: currentPrice,
       payoutUsd: actualPayoutUsd,
       payoutBitbon,
-      remaining,
+      remaining: rem10,
       payoutPct,
       isFirstPayout: i === 0,
       isLastPayout: i === NUM_RANGES - 1,
     })
   }
 
+  // --- Fallback: if period 10 actual payout < period 9 → 9 equal periods ---
+  const useEqualDist = parabolicRows[9].payoutUsd < parabolicRows[8].payoutUsd
+
+  let rows, remaining, totalPaid, numPeriods
+
+  if (useEqualDist) {
+    const equalPayoutUsd = paid10 / 9
+    numPeriods = 9
+    let rem = units
+    let paid = 0
+    const equalRows = []
+
+    for (let i = 0; i < 9; i++) {
+      const rangeIndex = firstPayoutRangeIndex + i
+      const rangeLow = rangeIndex * rangeStep
+      const rangeHigh = rangeLow + rangeStep
+      const currentPrice = i === 0 ? firstPayoutPrice : rangeLow
+      const payoutBitbon = rem > 0 ? Math.min(equalPayoutUsd / currentPrice, rem) : 0
+      const actualPayoutUsd = payoutBitbon * currentPrice
+      rem = Math.max(rem - payoutBitbon, 0)
+      paid += actualPayoutUsd
+      equalRows.push({
+        range: `${rangeLow}–${rangeHigh}`,
+        price: currentPrice,
+        payoutUsd: actualPayoutUsd,
+        payoutBitbon,
+        remaining: rem,
+        payoutPct: (actualPayoutUsd / investment) * 100,
+        isFirstPayout: i === 0,
+        isLastPayout: i === 8,
+        isEqualDistribution: true,
+      })
+    }
+
+    rows = [entryRow, ...equalRows]
+    remaining = rem
+    totalPaid = paid
+  } else {
+    rows = [entryRow, ...parabolicRows]
+    remaining = rem10
+    totalPaid = paid10
+    numPeriods = 10
+  }
+
   const remainingFraction = units > 0 ? remaining / units : 0
-
-  // Recommended investment: buy ~100 Bitbon at entry price, rounded to nearest $50
   const recommendedInvestment = Math.ceil((entryPrice * 100) / 50) * 50
-
-  // Max payout per period = 100% of investment (ranges 1 and 10)
   const maxPayout = investment
 
   return {
@@ -141,9 +137,11 @@ export function calculateRanges(params) {
       remaining,
       roi: (totalPaid / investment) * 100,
       remainingFraction,
-      startPercent,
+      startPercent: FIXED_START_PERCENT,
       recommendedInvestment,
       maxPayout,
+      numPeriods,
+      isEqualDistribution: useEqualDist,
     },
   }
 }

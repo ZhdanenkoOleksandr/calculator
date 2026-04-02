@@ -88,14 +88,19 @@ export default function ResultsTable({ rows, activeRow }) {
                             вход
                           </span>
                         )}
-                        {isFirstPayout && (
+                        {isFirstPayout && !row.isEqualDistribution && (
                           <span className="text-[10px] px-1.5 py-0.5 bg-emerald-900/60 text-emerald-400 rounded font-sans">
                             100%
                           </span>
                         )}
-                        {isLastPayout && (
+                        {isLastPayout && !row.isEqualDistribution && (
                           <span className="text-[10px] px-1.5 py-0.5 bg-emerald-900/60 text-emerald-400 rounded font-sans">
                             100%
+                          </span>
+                        )}
+                        {row.isEqualDistribution && isFirstPayout && (
+                          <span className="text-[10px] px-1.5 py-0.5 bg-amber-900/60 text-amber-400 rounded font-sans">
+                            =
                           </span>
                         )}
                       </div>
@@ -115,7 +120,9 @@ export default function ResultsTable({ rows, activeRow }) {
                       {row.payoutPct != null ? (
                         <span
                           className={
-                            isFirstPayout || row.isLastPayout
+                            row.isEqualDistribution
+                              ? 'text-amber-400'
+                              : isFirstPayout || row.isLastPayout
                               ? 'text-emerald-400 font-semibold'
                               : 'text-indigo-400'
                           }
@@ -196,6 +203,9 @@ export default function ResultsTable({ rows, activeRow }) {
               ${fmt(rows.slice(1).reduce((s, r) => s + r.payoutUsd, 0), 2)}
             </span>
           </span>
+          {rows.slice(1).some((r) => r.isEqualDistribution) && (
+            <span className="text-amber-500">⚑ равномерное распределение (9 периодов)</span>
+          )}
         </div>
       )}
     </div>

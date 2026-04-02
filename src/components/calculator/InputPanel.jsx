@@ -1,6 +1,6 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import { getPayoutSchedule, computeAutoStartPercent, RANGE_STEP } from '../../pages/Calculator'
+import { getPayoutSchedule, FIXED_START_PERCENT, RANGE_STEP } from '../../pages/Calculator'
 
 // Only investment and entryPrice are user-controlled
 const FIELDS = [
@@ -99,9 +99,9 @@ export default function InputPanel({
   const handleChange = (key, value) =>
     setParams((prev) => ({ ...prev, [key]: value }))
 
-  // Auto-computed values (reactive to entryPrice)
-  const startPercent = computeAutoStartPercent(params.entryPrice, RANGE_STEP)
-  const schedule = getPayoutSchedule(startPercent)
+  // Fixed constants
+  const startPercent = FIXED_START_PERCENT
+  const schedule = getPayoutSchedule(FIXED_START_PERCENT)
   const units = params.investment / params.entryPrice
   const recommendedInvestment = summary?.recommendedInvestment ?? Math.ceil((params.entryPrice * 100) / 50) * 50
   const maxPayout = params.investment // 100% of investment (ranges 1 & 10)
@@ -136,8 +136,8 @@ export default function InputPanel({
       <div className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-3">
         <StatBadge
           label="Старт 2-го диапазона"
-          value={`${startPercent.toFixed(2)}%`}
-          sub="авто · 1%→10%"
+          value="1%"
+          sub="фикс · рост к 100%"
           color="indigo"
         />
         <StatBadge
@@ -148,14 +148,14 @@ export default function InputPanel({
         />
         <StatBadge
           label="Диапазонов"
-          value="10"
-          sub="константа"
-          color="zinc"
+          value={`${summary?.numPeriods ?? 10}`}
+          sub={summary?.isEqualDistribution ? 'равномерно' : 'параболически'}
+          color={summary?.isEqualDistribution ? 'amber' : 'zinc'}
         />
         <StatBadge
           label="Остаток BBN"
-          value={`${((summary?.remainingFraction ?? 0.075) * 100).toFixed(1)}%`}
-          sub="цель: 5–10%"
+          value={`${((summary?.remainingFraction ?? 0) * 100).toFixed(1)}%`}
+          sub="после выплат"
           color="emerald"
         />
       </div>
@@ -214,7 +214,7 @@ export default function InputPanel({
         </div>
         <div className="flex justify-between mt-1.5 text-[10px] text-zinc-600 font-mono">
           <span>100%</span>
-          <span>{startPercent.toFixed(2)}%→100% (авто)</span>
+          <span>1%→100% (параболически)</span>
           <span>100%</span>
         </div>
       </div>
