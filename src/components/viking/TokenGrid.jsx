@@ -20,7 +20,7 @@ function LockIcon() {
   )
 }
 
-function TokenCard({ name, active, delay }) {
+function TokenCard({ name, active, projectShare, delay }) {
   const theme = TOKEN_COLORS[name] ?? { color: '#a1a1aa', glow: 'rgba(161,161,170,0.2)' }
   const initial = name.slice(0, 2).toUpperCase()
 
@@ -90,6 +90,28 @@ function TokenCard({ name, active, delay }) {
           {active ? 'Active' : 'Locked'}
         </p>
       </div>
+
+      {/* Project share */}
+      {projectShare !== undefined && (
+        <div className="relative z-10">
+          <div className="flex justify-between text-[10px] mb-1">
+            <span className="text-zinc-600">Доля проекта</span>
+            <span style={{ color: active ? theme.color : '#52525b' }}>{projectShare}%</span>
+          </div>
+          <div className="h-1 rounded-full bg-white/5 overflow-hidden">
+            <motion.div
+              className="h-full rounded-full"
+              style={{
+                background: active ? theme.color : 'rgba(255,255,255,0.1)',
+                boxShadow: active ? `0 0 4px ${theme.glow}` : 'none',
+              }}
+              initial={{ width: 0 }}
+              animate={{ width: `${projectShare}%` }}
+              transition={{ duration: 0.9, delay: delay + 0.3, ease: [0.25, 1, 0.5, 1] }}
+            />
+          </div>
+        </div>
+      )}
     </motion.div>
   )
 }

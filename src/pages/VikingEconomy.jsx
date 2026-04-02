@@ -7,6 +7,7 @@ import RoleDistribution from '../components/viking/RoleDistribution'
 import TokenGrid from '../components/viking/TokenGrid'
 import ActionFeed from '../components/viking/ActionFeed'
 import NextRoleCard from '../components/viking/NextRoleCard'
+import DigitalIntuition from '../components/viking/DigitalIntuition'
 
 // ─── Mock data ───────────────────────────────────────────────
 const ECONOMY_VALUE = 247850
@@ -37,12 +38,12 @@ const ROLES = [
 ]
 
 const TOKENS = [
-  { name: 'Viking Core',  active: true  },
-  { name: 'BeautyNet',    active: true  },
-  { name: 'Scanerbon',    active: true  },
-  { name: 'AuraBond',     active: true  },
-  { name: 'DAO District', active: false },
-  { name: 'NetTrack',     active: false },
+  { name: 'Viking Core',  active: true,  projectShare: 34 },
+  { name: 'BeautyNet',    active: true,  projectShare: 18 },
+  { name: 'Scanerbon',    active: true,  projectShare: 22 },
+  { name: 'AuraBond',     active: true,  projectShare: 11 },
+  { name: 'DAO District', active: false, projectShare: 0  },
+  { name: 'NetTrack',     active: false, projectShare: 0  },
 ]
 
 const ACTIONS = [
@@ -141,6 +142,51 @@ export default function VikingEconomy() {
             icon="◈"
             delay={0.2}
           />
+        </div>
+
+        {/* SERVICES LAYER — PING · LINK · Цифровая интуиция */}
+        <div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.15 }}
+            className="flex items-center gap-2 mb-3"
+          >
+            <div className="h-px flex-1" style={{ background: 'linear-gradient(90deg, rgba(139,92,246,0.3), transparent)' }} />
+            <span
+              className="text-[10px] uppercase tracking-[0.25em] font-semibold px-3 py-1 rounded-full"
+              style={{
+                color: '#a78bfa',
+                background: 'rgba(139,92,246,0.08)',
+                border: '1px solid rgba(139,92,246,0.2)',
+              }}
+            >
+              Сервисы
+            </span>
+            <div className="h-px flex-1" style={{ background: 'linear-gradient(90deg, transparent, rgba(139,92,246,0.3))' }} />
+          </motion.div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <StatCard
+              title="PING"
+              value="94"
+              subtitle="Network pulse"
+              detail="Активность"
+              color="cyan"
+              barPct={94}
+              icon="◎"
+              delay={0}
+            />
+            <StatCard
+              title="LINK"
+              value="3,241"
+              subtitle="Активных связей"
+              color="teal"
+              icon="⬡"
+              delay={0.1}
+            />
+            <DigitalIntuition aura={78} ping={94} link={72} delay={0.2} />
+          </div>
         </div>
 
         {/* CHART + ROLES */}
