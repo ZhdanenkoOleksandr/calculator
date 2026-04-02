@@ -23,9 +23,17 @@ const TIMELINE = [
 ]
 
 const ROLES = [
-  { name: 'Provider',  pct: 42, income: '$104,097', color: 'blue'   },
-  { name: 'Creator',   pct: 35, income: '$86,748',  color: 'purple' },
-  { name: 'Investor',  pct: 23, income: '$57,005',  color: 'gold'   },
+  // Базовые роли
+  { name: 'Провайдер',     pct: 42, income: '$104,097', color: 'blue',    icon: '⬡' },
+  { name: 'Создатель',     pct: 35, income: '$86,748',  color: 'purple',  icon: '✦' },
+  { name: 'Инвестор',      pct: 23, income: '$57,005',  color: 'gold',    icon: '◈' },
+  // Академия платформенной экономики
+  { name: 'Ментор',        pct: 18, income: '$44,613',  color: 'emerald', icon: '◎' },
+  { name: 'Аналитик',      pct: 14, income: '$34,699',  color: 'cyan',    icon: '◇' },
+  { name: 'Амбассадор',    pct: 11, income: '$27,264',  color: 'rose',    icon: '⚑' },
+  { name: 'Архитектор',    pct: 29, income: '$71,877',  color: 'indigo',  icon: '⬙' },
+  { name: 'Куратор',       pct: 16, income: '$39,656',  color: 'orange',  icon: '⊕' },
+  { name: 'Модератор',     pct: 9,  income: '$22,307',  color: 'teal',    icon: '⊞' },
 ]
 
 const TOKENS = [
