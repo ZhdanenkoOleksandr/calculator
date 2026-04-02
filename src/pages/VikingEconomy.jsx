@@ -25,38 +25,53 @@ const TIMELINE = [
 ]
 
 const ROLES = [
-  { name: 'Провайдер',  pct: 42, income: '$104,097', color: 'blue',    icon: '⬡' },
-  { name: 'Создатель',  pct: 35, income: '$86,748',  color: 'purple',  icon: '✦' },
-  { name: 'Инвестор',   pct: 23, income: '$57,005',  color: 'gold',    icon: '◈' },
-  { name: 'Ментор',     pct: 18, income: '$44,613',  color: 'emerald', icon: '◎' },
-  { name: 'Аналитик',   pct: 14, income: '$34,699',  color: 'cyan',    icon: '◇' },
-  { name: 'Амбассадор', pct: 11, income: '$27,264',  color: 'rose',    icon: '⚑' },
-  { name: 'Архитектор', pct: 29, income: '$71,877',  color: 'indigo',  icon: '⬙' },
-  { name: 'Куратор',    pct: 16, income: '$39,656',  color: 'orange',  icon: '⊕' },
-  { name: 'Модератор',  pct: 9,  income: '$22,307',  color: 'teal',    icon: '⊞' },
+  { name: 'Провайдер',  pct: 42, income: '$104,097', color: 'blue',    icon: 'ᚹ' },
+  { name: 'Создатель',  pct: 35, income: '$86,748',  color: 'purple',  icon: 'ᚷ' },
+  { name: 'Инвестор',   pct: 23, income: '$57,005',  color: 'gold',    icon: 'ᚠ' },
+  { name: 'Ментор',     pct: 18, income: '$44,613',  color: 'emerald', icon: 'ᚱ' },
+  { name: 'Аналитик',   pct: 14, income: '$34,699',  color: 'cyan',    icon: 'ᛃ' },
+  { name: 'Амбассадор', pct: 11, income: '$27,264',  color: 'rose',    icon: 'ᛖ' },
+  { name: 'Архитектор', pct: 29, income: '$71,877',  color: 'indigo',  icon: 'ᛟ' },
+  { name: 'Куратор',    pct: 16, income: '$39,656',  color: 'orange',  icon: 'ᛇ' },
+  { name: 'Модератор',  pct: 9,  income: '$22,307',  color: 'teal',    icon: 'ᛏ' },
 ]
 
 const TOKENS = [
-  { name: 'Viking Core',  active: true,  projectShare: 34 },
-  { name: 'BeautyNet',    active: true,  projectShare: 18 },
-  { name: 'Scanerbon',    active: true,  projectShare: 22 },
-  { name: 'AuraBond',     active: true,  projectShare: 11 },
-  { name: 'DAO District', active: false, projectShare: 0  },
-  { name: 'NetTrack',     active: false, projectShare: 0  },
+  { name: 'Viking Core',  active: true,  projectShare: 34, icon: '⚔' },
+  { name: 'BeautyNet',    active: true,  projectShare: 18, icon: 'ᛊ' },
+  { name: 'Scanerbon',    active: true,  projectShare: 22, icon: 'ᚲ' },
+  { name: 'AuraBond',     active: true,  projectShare: 11, icon: 'ᛉ' },
+  { name: 'DAO District', active: false, projectShare: 0,  icon: 'ᛜ' },
+  { name: 'NetTrack',     active: false, projectShare: 0,  icon: 'ᛗ' },
 ]
 
-// Personal brand services for mini carousel
+// Bitbon System services — полный список из скриншотов
+const BB = '#38bdf8'  // Bitbon System blue
 const BRAND_SERVICES = [
-  { name: 'Viking Core',      icon: '⚔',  color: '#a78bfa', active: true  },
-  { name: 'BeautyNet',        icon: '✦',  color: '#f472b6', active: true  },
-  { name: 'Scanerbon',        icon: '◎',  color: '#34d399', active: true  },
-  { name: 'AuraBond',         icon: '◉',  color: '#c084fc', active: true  },
-  { name: 'Platform Academy', icon: '◈',  color: '#22d3ee', active: true  },
-  { name: 'Viking Lab',       icon: '⬙',  color: '#fb923c', active: true  },
-  { name: 'DAO District',     icon: '⬡',  color: '#60a5fa', active: false },
-  { name: 'NetTrack',         icon: '⊕',  color: '#fbbf24', active: false },
-  { name: 'AuraStake',        icon: '◇',  color: '#818cf8', active: true  },
-  { name: 'Viking Node',      icon: '⊞',  color: '#2dd4bf', active: false },
+  { name: 'Сховище',                  icon: 'ᛟ', color: BB,        active: true  },
+  { name: 'Конструктор метаресурсів', icon: 'ᚷ', color: '#60a5fa', active: true  },
+  { name: 'АУРА',                     icon: 'ᛊ', color: '#a78bfa', active: true  },
+  { name: 'Метадокументи',            icon: 'ᚨ', color: BB,        active: true  },
+  { name: 'Лінк',                     icon: 'ᛚ', color: '#22d3ee', active: true  },
+  { name: 'Щоденник',                 icon: 'ᛃ', color: '#2dd4bf', active: true  },
+  { name: 'Оператор',                 icon: 'ᚦ', color: BB,        active: true  },
+  { name: "Контриб'ютинг",            icon: 'ᚢ', color: '#60a5fa', active: true  },
+  { name: 'Академія',                 icon: 'ᚱ', color: BB,        active: true  },
+  { name: 'ERBB',                     icon: 'ᚠ', color: '#fbbf24', active: true  },
+  { name: 'Сервіс оголошень',         icon: 'ᚹ', color: BB,        active: false },
+  { name: 'Ескроу маркетплейс',       icon: 'ᛏ', color: '#22d3ee', active: true  },
+  { name: 'Реєстри та фонди',         icon: 'ᛒ', color: BB,        active: true  },
+  { name: 'iO',                       icon: 'ᛁ', color: '#818cf8', active: true  },
+  { name: 'Голосування та опитування',icon: 'ᛜ', color: BB,        active: true  },
+  { name: 'Криптобокс',               icon: 'ᛇ', color: '#34d399', active: true  },
+  { name: 'Таємний арбітр',           icon: 'ᛈ', color: BB,        active: false },
+  { name: 'Метамаркет',               icon: 'ᛖ', color: '#60a5fa', active: true  },
+  { name: 'Пошук сервісів',           icon: 'ᛉ', color: BB,        active: true  },
+  { name: 'Сегмент мережі',           icon: 'ᛗ', color: '#22d3ee', active: true  },
+  { name: 'Бони',                     icon: 'ᛞ', color: '#fbbf24', active: true  },
+  { name: 'Пінг',                     icon: 'ᚲ', color: BB,        active: true  },
+  { name: 'Сертифікати',              icon: 'ᚺ', color: '#60a5fa', active: true  },
+  { name: 'Синергія',                 icon: 'ᚾ', color: '#2dd4bf', active: true  },
 ]
 
 const ACTIONS = [
@@ -147,9 +162,9 @@ export default function VikingEconomy() {
         {/* NETWORK + ASSETS (2 main stat cards) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <StatCard title="Network" value="1,247" subtitle="Active connections"
-            color="blue" icon="⬡" delay={0} />
+            color="blue" icon="ᛗ" delay={0} />
           <StatCard title="Assets" value="23" subtitle="Active metaresources"
-            detail="Capacity" color="gold" barPct={58} icon="◈" delay={0.1} />
+            detail="Capacity" color="gold" barPct={58} icon="ᚠ" delay={0.1} />
         </div>
 
         {/* ── СЕРВИСЫ LAYER: AURA + PING + LINK + brand carousel ── */}
@@ -157,11 +172,11 @@ export default function VikingEconomy() {
           <SectionDivider label="Сервисы" />
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <StatCard title="AURA" value="78" subtitle="Reputation score"
-              detail="Reputation" color="purple" barPct={78} icon="◉" delay={0} />
+              detail="Reputation" color="purple" barPct={78} icon="ᛊ" delay={0} />
             <StatCard title="PING" value="94" subtitle="Network pulse"
-              detail="Активность" color="cyan" barPct={94} icon="◎" delay={0.08} />
+              detail="Активность" color="cyan" barPct={94} icon="ᚲ" delay={0.08} />
             <StatCard title="LINK" value="3,241" subtitle="Активных связей"
-              color="teal" icon="⬡" delay={0.16} />
+              color="teal" icon="ᛚ" delay={0.16} />
           </div>
           {/* Personal brand services mini carousel — cards ~30% of StatCard height */}
           <ServiceMiniCarousel services={BRAND_SERVICES} />

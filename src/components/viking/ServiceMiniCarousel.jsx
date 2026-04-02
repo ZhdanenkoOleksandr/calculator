@@ -4,6 +4,9 @@ import { motion, useAnimation } from 'framer-motion'
 // Personal brand services — each card is ~30% the height of a StatCard
 const CARD_H = 52  // ≈30% of StatCard (~170px)
 
+// Bitbon System brand color
+const BB_BLUE = '#38bdf8'
+
 function MiniCard({ name, icon, color, active, glow }) {
   return (
     <div
@@ -109,15 +112,19 @@ export default function ServiceMiniCarousel({ services }) {
     <div className="mt-4">
       {/* Label */}
       <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-600 font-semibold mb-2 px-0.5">
-        Сервисы личного бренда
+        <span style={{
+          background: 'linear-gradient(90deg, #38bdf8, #22d3ee)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+        }}>Сервисы Bitbon System</span>
       </p>
 
       {/* Track container */}
       <div
         className="overflow-hidden rounded-xl relative"
         style={{
-          background: 'rgba(255,255,255,0.01)',
-          border: '1px solid rgba(255,255,255,0.05)',
+          background: 'rgba(56,189,248,0.02)',
+          border: '1px solid rgba(56,189,248,0.1)',
         }}
         onMouseEnter={pause}
         onMouseLeave={resume}

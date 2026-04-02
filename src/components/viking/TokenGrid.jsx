@@ -20,9 +20,9 @@ function LockIcon() {
   )
 }
 
-function TokenCard({ name, active, projectShare, delay }) {
+function TokenCard({ name, active, projectShare, icon, delay }) {
   const theme = TOKEN_COLORS[name] ?? { color: '#a1a1aa', glow: 'rgba(161,161,170,0.2)' }
-  const initial = name.slice(0, 2).toUpperCase()
+  const badge = icon ?? name.slice(0, 2).toUpperCase()
 
   return (
     <motion.div
@@ -65,7 +65,7 @@ function TokenCard({ name, active, projectShare, delay }) {
             boxShadow: active ? `0 0 10px ${theme.glow}` : 'none',
           }}
         >
-          {initial}
+          {badge}
         </div>
         <div className="flex items-center gap-1">
           {active ? (
