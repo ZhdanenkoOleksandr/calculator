@@ -100,7 +100,7 @@ export default function InputPanel({
     setParams((prev) => ({ ...prev, [key]: value }))
 
   // Auto-computed values (reactive to entryPrice)
-  const startPercent = computeAutoStartPercent(params.investment)
+  const startPercent = computeAutoStartPercent(params.entryPrice, RANGE_STEP)
   const schedule = getPayoutSchedule(startPercent)
   const units = params.investment / params.entryPrice
   const recommendedInvestment = summary?.recommendedInvestment ?? Math.ceil((params.entryPrice * 100) / 50) * 50

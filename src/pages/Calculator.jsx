@@ -29,20 +29,48 @@ export function getPayoutSchedule(startPercent) {
   return schedule
 }
 
-// startPercent depends ONLY on investment:
-// $10 → 10%,  $10 000 → 1%  (log-linear, clamped to [1%, 10%])
-export function computeAutoStartPercent(investment) {
-  const t = Math.log(Math.max(10, investment) / 10) / Math.log(1000)
-  const raw = 10 * Math.pow(0.1, Math.min(1, t))
-  return Math.max(1, Math.min(10, Math.round(raw * 100) / 100))
-}
+// startPercent is auto-computed via binary search so that remaining BBN ≈ 15% of initial
+// (midpoint of 10–20%). Depends only on entryPrice + rangeStep — NOT on investment amount.
+export const TARGET_RETENTION = 0.15
 
-export const TARGET_RETENTION = 0.075
+export function computeAutoStartPercent(entryPrice, rangeStep = RANGE_STEP) {
+  const entryRangeIndex = Math.floor(entryPrice / rangeStep)
+  const firstPayoutRangeIndex = entryRangeIndex + 1
+  const firstPayoutPrice = firstPayoutRangeIndex * rangeStep + (entryPrice % rangeStep)
+
+  // Prices for all 10 payout events
+  const prices = [firstPayoutPrice]
+  for (let i = 0; i <= 8; i++) {
+    prices.push((firstPayoutRangeIndex + 1 + i) * rangeStep)
+  }
+
+  // Retention fraction is investment-independent: 1 - entryPrice × Σ(pct_i/100 / price_i)
+  function calcRetention(sp) {
+    const ratio = 100 / sp
+    let sum = 1.0 / prices[0] // range 1: 100%
+    for (let i = 0; i <= 8; i++) {
+      sum += (sp * Math.pow(ratio, i / 8)) / 100 / prices[i + 1]
+    }
+    return 1 - entryPrice * sum
+  }
+
+  const MIN_SP = 1.0, MAX_SP = 10.0
+  if (calcRetention(MIN_SP) <= TARGET_RETENTION) return MIN_SP
+  if (calcRetention(MAX_SP) >= TARGET_RETENTION) return MAX_SP
+
+  let lo = MIN_SP, hi = MAX_SP
+  for (let iter = 0; iter < 64; iter++) {
+    const mid = (lo + hi) / 2
+    if (calcRetention(mid) > TARGET_RETENTION) lo = mid
+    else hi = mid
+  }
+  return Math.round(((lo + hi) / 2) * 100) / 100
+}
 
 export function calculateRanges(params) {
   const { investment, entryPrice } = params
   const rangeStep = RANGE_STEP
-  const startPercent = computeAutoStartPercent(investment)
+  const startPercent = computeAutoStartPercent(entryPrice, rangeStep)
   const units = investment / entryPrice
   const schedule = getPayoutSchedule(startPercent)
 
@@ -51,7 +79,7 @@ export function calculateRanges(params) {
   const entryRangeHigh = entryRangeLow + rangeStep
 
   const firstPayoutRangeIndex = entryRangeIndex + 1
-  const firstPayoutPrice = firstPayoutRangeIndex * rangeStep + entryPrice
+  const firstPayoutPrice = firstPayoutRangeIndex * rangeStep + (entryPrice % rangeStep)
 
   const rows = [
     {
