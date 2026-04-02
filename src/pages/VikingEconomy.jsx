@@ -8,8 +8,9 @@ import TokenGrid from '../components/viking/TokenGrid'
 import ActionFeed from '../components/viking/ActionFeed'
 import NextRoleCard from '../components/viking/NextRoleCard'
 import DigitalIntuition from '../components/viking/DigitalIntuition'
+import ServiceMiniCarousel from '../components/viking/ServiceMiniCarousel'
 
-// ─── Mock data ───────────────────────────────────────────────
+// ─── Mock data ────────────────────────────────────────────────
 const ECONOMY_VALUE = 247850
 const GROWTH_PCT    = 34.7
 
@@ -24,17 +25,15 @@ const TIMELINE = [
 ]
 
 const ROLES = [
-  // Базовые роли
-  { name: 'Провайдер',     pct: 42, income: '$104,097', color: 'blue',    icon: '⬡' },
-  { name: 'Создатель',     pct: 35, income: '$86,748',  color: 'purple',  icon: '✦' },
-  { name: 'Инвестор',      pct: 23, income: '$57,005',  color: 'gold',    icon: '◈' },
-  // Академия платформенной экономики
-  { name: 'Ментор',        pct: 18, income: '$44,613',  color: 'emerald', icon: '◎' },
-  { name: 'Аналитик',      pct: 14, income: '$34,699',  color: 'cyan',    icon: '◇' },
-  { name: 'Амбассадор',    pct: 11, income: '$27,264',  color: 'rose',    icon: '⚑' },
-  { name: 'Архитектор',    pct: 29, income: '$71,877',  color: 'indigo',  icon: '⬙' },
-  { name: 'Куратор',       pct: 16, income: '$39,656',  color: 'orange',  icon: '⊕' },
-  { name: 'Модератор',     pct: 9,  income: '$22,307',  color: 'teal',    icon: '⊞' },
+  { name: 'Провайдер',  pct: 42, income: '$104,097', color: 'blue',    icon: '⬡' },
+  { name: 'Создатель',  pct: 35, income: '$86,748',  color: 'purple',  icon: '✦' },
+  { name: 'Инвестор',   pct: 23, income: '$57,005',  color: 'gold',    icon: '◈' },
+  { name: 'Ментор',     pct: 18, income: '$44,613',  color: 'emerald', icon: '◎' },
+  { name: 'Аналитик',   pct: 14, income: '$34,699',  color: 'cyan',    icon: '◇' },
+  { name: 'Амбассадор', pct: 11, income: '$27,264',  color: 'rose',    icon: '⚑' },
+  { name: 'Архитектор', pct: 29, income: '$71,877',  color: 'indigo',  icon: '⬙' },
+  { name: 'Куратор',    pct: 16, income: '$39,656',  color: 'orange',  icon: '⊕' },
+  { name: 'Модератор',  pct: 9,  income: '$22,307',  color: 'teal',    icon: '⊞' },
 ]
 
 const TOKENS = [
@@ -46,25 +45,60 @@ const TOKENS = [
   { name: 'NetTrack',     active: false, projectShare: 0  },
 ]
 
+// Personal brand services for mini carousel
+const BRAND_SERVICES = [
+  { name: 'Viking Core',      icon: '⚔',  color: '#a78bfa', active: true  },
+  { name: 'BeautyNet',        icon: '✦',  color: '#f472b6', active: true  },
+  { name: 'Scanerbon',        icon: '◎',  color: '#34d399', active: true  },
+  { name: 'AuraBond',         icon: '◉',  color: '#c084fc', active: true  },
+  { name: 'Platform Academy', icon: '◈',  color: '#22d3ee', active: true  },
+  { name: 'Viking Lab',       icon: '⬙',  color: '#fb923c', active: true  },
+  { name: 'DAO District',     icon: '⬡',  color: '#60a5fa', active: false },
+  { name: 'NetTrack',         icon: '⊕',  color: '#fbbf24', active: false },
+  { name: 'AuraStake',        icon: '◇',  color: '#818cf8', active: true  },
+  { name: 'Viking Node',      icon: '⊞',  color: '#2dd4bf', active: false },
+]
+
 const ACTIONS = [
-  { title: 'Network Expansion',   result: '+12 nodes',    time: '2h ago',  type: 'network', positive: true  },
-  { title: 'Viking Core Activated', result: 'Token live', time: '5h ago',  type: 'asset',   positive: true  },
-  { title: 'AURA Boost',          result: '+3.2 pts',     time: '1d ago',  type: 'aura',    positive: true  },
-  { title: 'Income Received',     result: '+$1,847',      time: '2d ago',  type: 'income',  positive: true  },
-  { title: 'Reputation Stake',    result: '−$500',        time: '3d ago',  type: 'stake',   positive: false },
-  { title: 'Asset Registered',    result: '+1 asset',     time: '4d ago',  type: 'asset',   positive: true  },
+  { title: 'Network Expansion',    result: '+12 nodes',    time: '2h ago',  type: 'network', positive: true  },
+  { title: 'Viking Core Activated',result: 'Token live',   time: '5h ago',  type: 'asset',   positive: true  },
+  { title: 'AURA Boost',           result: '+3.2 pts',     time: '1d ago',  type: 'aura',    positive: true  },
+  { title: 'Income Received',      result: '+$1,847',      time: '2d ago',  type: 'income',  positive: true  },
+  { title: 'Reputation Stake',     result: '−$500',        time: '3d ago',  type: 'stake',   positive: false },
+  { title: 'Asset Registered',     result: '+1 asset',     time: '4d ago',  type: 'asset',   positive: true  },
 ]
 
 const REQUIREMENTS = [
-  { label: 'Active assets ≥ 5',        done: true,  progress: '100%' },
-  { label: 'Network connections ≥ 1500', done: false, progress: '83%' },
-  { label: 'AURA score ≥ 90',          done: false, progress: '78%' },
-  { label: 'Launch a funded project',  done: false, progress: '40%' },
+  { label: 'Active assets ≥ 5',          done: true,  progress: '100%' },
+  { label: 'Network connections ≥ 1500', done: false, progress: '83%'  },
+  { label: 'AURA score ≥ 90',           done: false, progress: '78%'  },
+  { label: 'Launch a funded project',   done: false, progress: '40%'  },
 ]
+
+// ─── Section divider ─────────────────────────────────────────
+function SectionDivider({ label, color = '#a78bfa', bg = 'rgba(139,92,246,0.08)', border = 'rgba(139,92,246,0.2)' }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: 0.1 }}
+      className="flex items-center gap-2 mb-4"
+    >
+      <div className="h-px flex-1" style={{ background: `linear-gradient(90deg, ${color}50, transparent)` }} />
+      <span
+        className="text-[10px] uppercase tracking-[0.25em] font-semibold px-3 py-1 rounded-full"
+        style={{ color, background: bg, border: `1px solid ${border}` }}
+      >
+        {label}
+      </span>
+      <div className="h-px flex-1" style={{ background: `linear-gradient(90deg, transparent, ${color}50)` }} />
+    </motion.div>
+  )
+}
 
 export default function VikingEconomy() {
   return (
-    <div className="min-h-screen bg-zinc-950 font-inter" style={{ background: '#080810' }}>
+    <div className="min-h-screen font-inter" style={{ background: '#080810' }}>
       {/* Header */}
       <header className="border-b border-white/5">
         <div className="max-w-6xl mx-auto px-4 py-6 md:py-8">
@@ -87,13 +121,11 @@ export default function VikingEconomy() {
             <div>
               <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-white">
                 Bitbon{' '}
-                <span
-                  style={{
-                    background: 'linear-gradient(90deg, #a78bfa, #60a5fa)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                  }}
-                >
+                <span style={{
+                  background: 'linear-gradient(90deg, #a78bfa, #60a5fa)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}>
                   Viking Economy
                 </span>
               </h1>
@@ -107,86 +139,43 @@ export default function VikingEconomy() {
 
       <main className="max-w-6xl mx-auto px-4 py-6 md:py-10 space-y-6">
 
-        {/* HERO — Core reactor */}
+        {/* HERO */}
         <div className="flex justify-center">
           <CoreBalanceCard value={ECONOMY_VALUE} growthPct={GROWTH_PCT} />
         </div>
 
-        {/* THREE STAT CARDS */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <StatCard
-            title="AURA"
-            value="78"
-            subtitle="Reputation score"
-            detail="Reputation"
-            color="purple"
-            barPct={78}
-            icon="◉"
-            delay={0}
-          />
-          <StatCard
-            title="Network"
-            value="1,247"
-            subtitle="Active connections"
-            color="blue"
-            icon="⬡"
-            delay={0.1}
-          />
-          <StatCard
-            title="Assets"
-            value="23"
-            subtitle="Active metaresources"
-            detail="Capacity"
-            color="gold"
-            barPct={58}
-            icon="◈"
-            delay={0.2}
-          />
+        {/* NETWORK + ASSETS (2 main stat cards) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <StatCard title="Network" value="1,247" subtitle="Active connections"
+            color="blue" icon="⬡" delay={0} />
+          <StatCard title="Assets" value="23" subtitle="Active metaresources"
+            detail="Capacity" color="gold" barPct={58} icon="◈" delay={0.1} />
         </div>
 
-        {/* SERVICES LAYER — PING · LINK · Цифровая интуиция */}
+        {/* ── СЕРВИСЫ LAYER: AURA + PING + LINK + brand carousel ── */}
         <div>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.15 }}
-            className="flex items-center gap-2 mb-3"
-          >
-            <div className="h-px flex-1" style={{ background: 'linear-gradient(90deg, rgba(139,92,246,0.3), transparent)' }} />
-            <span
-              className="text-[10px] uppercase tracking-[0.25em] font-semibold px-3 py-1 rounded-full"
-              style={{
-                color: '#a78bfa',
-                background: 'rgba(139,92,246,0.08)',
-                border: '1px solid rgba(139,92,246,0.2)',
-              }}
-            >
-              Сервисы
-            </span>
-            <div className="h-px flex-1" style={{ background: 'linear-gradient(90deg, transparent, rgba(139,92,246,0.3))' }} />
-          </motion.div>
-
+          <SectionDivider label="Сервисы" />
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <StatCard
-              title="PING"
-              value="94"
-              subtitle="Network pulse"
-              detail="Активность"
-              color="cyan"
-              barPct={94}
-              icon="◎"
-              delay={0}
-            />
-            <StatCard
-              title="LINK"
-              value="3,241"
-              subtitle="Активных связей"
-              color="teal"
-              icon="⬡"
-              delay={0.1}
-            />
-            <DigitalIntuition aura={78} ping={94} link={72} delay={0.2} />
+            <StatCard title="AURA" value="78" subtitle="Reputation score"
+              detail="Reputation" color="purple" barPct={78} icon="◉" delay={0} />
+            <StatCard title="PING" value="94" subtitle="Network pulse"
+              detail="Активность" color="cyan" barPct={94} icon="◎" delay={0.08} />
+            <StatCard title="LINK" value="3,241" subtitle="Активных связей"
+              color="teal" icon="⬡" delay={0.16} />
           </div>
+          {/* Personal brand services mini carousel — cards ~30% of StatCard height */}
+          <ServiceMiniCarousel services={BRAND_SERVICES} />
+        </div>
+
+        {/* ── ИНСТРУМЕНТЫ LAYER: Цифровая интуиция ── */}
+        <div>
+          <SectionDivider
+            label="Инструменты"
+            color="#22d3ee"
+            bg="rgba(34,211,238,0.07)"
+            border="rgba(34,211,238,0.2)"
+          />
+          <DigitalIntuition aura={78} ping={94} link={72} />
         </div>
 
         {/* CHART + ROLES */}
