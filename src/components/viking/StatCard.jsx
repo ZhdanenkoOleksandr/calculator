@@ -2,34 +2,19 @@ import React from 'react'
 import { motion } from 'framer-motion'
 
 const THEMES = {
-  purple: {
-    glow: 'rgba(139,92,246,0.3)',
-    border: 'rgba(139,92,246,0.3)',
-    bg: 'rgba(139,92,246,0.06)',
-    bar: 'linear-gradient(90deg, #7c3aed, #a78bfa)',
-    label: '#a78bfa',
-    dot: '#8b5cf6',
-  },
-  blue: {
-    glow: 'rgba(59,130,246,0.3)',
-    border: 'rgba(59,130,246,0.3)',
-    bg: 'rgba(59,130,246,0.06)',
-    bar: 'linear-gradient(90deg, #1d4ed8, #60a5fa)',
-    label: '#60a5fa',
-    dot: '#3b82f6',
-  },
-  gold: {
-    glow: 'rgba(245,158,11,0.3)',
-    border: 'rgba(245,158,11,0.25)',
-    bg: 'rgba(245,158,11,0.06)',
-    bar: 'linear-gradient(90deg, #b45309, #fbbf24)',
-    label: '#fbbf24',
-    dot: '#f59e0b',
-  },
+  purple:  { glow: 'rgba(139,92,246,0.3)',  border: 'rgba(139,92,246,0.3)',  bg: 'rgba(139,92,246,0.06)',  bar: 'linear-gradient(90deg,#7c3aed,#a78bfa)',  label: '#a78bfa', dot: '#8b5cf6' },
+  blue:    { glow: 'rgba(59,130,246,0.3)',   border: 'rgba(59,130,246,0.3)',  bg: 'rgba(59,130,246,0.06)',  bar: 'linear-gradient(90deg,#1d4ed8,#60a5fa)',  label: '#60a5fa', dot: '#3b82f6' },
+  gold:    { glow: 'rgba(245,158,11,0.3)',   border: 'rgba(245,158,11,0.25)', bg: 'rgba(245,158,11,0.06)',  bar: 'linear-gradient(90deg,#b45309,#fbbf24)',  label: '#fbbf24', dot: '#f59e0b' },
+  cyan:    { glow: 'rgba(34,211,238,0.3)',   border: 'rgba(34,211,238,0.25)', bg: 'rgba(34,211,238,0.06)',  bar: 'linear-gradient(90deg,#0e7490,#22d3ee)',  label: '#22d3ee', dot: '#06b6d4' },
+  teal:    { glow: 'rgba(45,212,191,0.3)',   border: 'rgba(45,212,191,0.25)', bg: 'rgba(45,212,191,0.06)',  bar: 'linear-gradient(90deg,#0f766e,#2dd4bf)',  label: '#2dd4bf', dot: '#14b8a6' },
+  emerald: { glow: 'rgba(52,211,153,0.3)',   border: 'rgba(52,211,153,0.25)', bg: 'rgba(52,211,153,0.06)',  bar: 'linear-gradient(90deg,#047857,#34d399)',  label: '#34d399', dot: '#10b981' },
+  rose:    { glow: 'rgba(251,113,133,0.3)',  border: 'rgba(251,113,133,0.25)',bg: 'rgba(251,113,133,0.06)', bar: 'linear-gradient(90deg,#be123c,#fb7185)',  label: '#fb7185', dot: '#f43f5e' },
+  indigo:  { glow: 'rgba(129,140,248,0.3)',  border: 'rgba(129,140,248,0.25)',bg: 'rgba(129,140,248,0.06)', bar: 'linear-gradient(90deg,#3730a3,#818cf8)',  label: '#818cf8', dot: '#6366f1' },
+  orange:  { glow: 'rgba(251,146,60,0.3)',   border: 'rgba(251,146,60,0.25)', bg: 'rgba(251,146,60,0.06)',  bar: 'linear-gradient(90deg,#c2410c,#fb923c)',  label: '#fb923c', dot: '#f97316' },
 }
 
 export default function StatCard({ title, value, subtitle, detail, color = 'purple', barPct, icon, delay = 0 }) {
-  const t = THEMES[color]
+  const t = THEMES[color] ?? THEMES.blue   // fallback — never undefined
 
   return (
     <motion.div
@@ -64,17 +49,12 @@ export default function StatCard({ title, value, subtitle, detail, color = 'purp
           >
             {value}
           </motion.p>
-          {subtitle && (
-            <p className="text-xs text-zinc-500 mt-0.5">{subtitle}</p>
-          )}
+          {subtitle && <p className="text-xs text-zinc-500 mt-0.5">{subtitle}</p>}
         </div>
         {icon && (
           <div
             className="w-10 h-10 rounded-xl flex items-center justify-center text-lg flex-shrink-0"
-            style={{
-              background: `rgba(255,255,255,0.04)`,
-              border: `1px solid ${t.border}`,
-            }}
+            style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${t.border}` }}
           >
             {icon}
           </div>
