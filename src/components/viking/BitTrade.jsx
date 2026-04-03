@@ -174,7 +174,7 @@ function RoleRow({ name, pct, range, color, icon, index }) {
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: index * 0.08 }}
-      className="rounded-2xl px-5 py-4 flex flex-col items-center gap-3 text-center"
+      className="rounded-2xl px-5 py-4 flex flex-col items-center gap-3 text-center flex-shrink-0 w-[72vw] sm:w-auto snap-center"
       style={{ background: t.bg, border: `1px solid ${t.border}` }}
     >
       {/* Star badge */}
@@ -243,8 +243,8 @@ function RolesFace({ onFlipBack }) {
         </button>
       </div>
 
-      {/* Role cards: 3 in a row */}
-      <div className="grid grid-cols-3 gap-3 flex-1">
+      {/* Role cards: horizontal scroll on mobile, 3-col grid on desktop */}
+      <div className="flex sm:grid sm:grid-cols-3 gap-3 flex-1 overflow-x-auto pb-1 sm:overflow-visible sm:pb-0 snap-x snap-mandatory sm:snap-none" style={{ scrollbarWidth: 'none' }}>
         {TRADE_ROLES.map((role, i) => (
           <RoleRow key={role.name} {...role} index={i} />
         ))}
