@@ -9,6 +9,7 @@ import ActionFeed from '../components/viking/ActionFeed'
 import NextRoleCard from '../components/viking/NextRoleCard'
 import DigitalIntuition from '../components/viking/DigitalIntuition'
 import ServiceMiniCarousel from '../components/viking/ServiceMiniCarousel'
+import BitTrade from '../components/viking/BitTrade'
 
 // ─── Mock data ────────────────────────────────────────────────
 const ECONOMY_VALUE = 247850
@@ -192,6 +193,9 @@ export default function VikingEconomy() {
           />
           <DigitalIntuition aura={78} ping={94} link={72} />
         </div>
+
+        {/* ── bit.Trade IB-ПАКЕТЫ ── */}
+        <BitTrade />
 
         {/* CHART + ROLES */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
