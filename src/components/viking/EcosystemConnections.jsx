@@ -1,5 +1,94 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+
+// ── OneSpace trefoil logo (SVG recreation of the app icon) ────
+function OneSpaceIcon({ size = 48 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Dark navy background */}
+      <rect width="48" height="48" rx="10" fill="#0e1240"/>
+
+      {/* Flower of life geometry (subtle) */}
+      <g opacity="0.12" stroke="#c9a84c" strokeWidth="0.6" fill="none">
+        <circle cx="24" cy="24" r="10"/>
+        <circle cx="24" cy="14" r="10"/>
+        <circle cx="24" cy="34" r="10"/>
+        <circle cx="15.35" cy="19" r="10"/>
+        <circle cx="32.65" cy="19" r="10"/>
+        <circle cx="15.35" cy="29" r="10"/>
+        <circle cx="32.65" cy="29" r="10"/>
+      </g>
+
+      {/* Trefoil petals — gold gradient */}
+      <defs>
+        <linearGradient id="goldG" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#f0d47a"/>
+          <stop offset="100%" stopColor="#b8860b"/>
+        </linearGradient>
+      </defs>
+
+      {/* Petal 1 — pointing up */}
+      <path d="M24,24 C19,20 17,10 24,5 C31,10 29,20 24,24" fill="url(#goldG)"/>
+      {/* Petal 2 — bottom-left (rotate 120°) */}
+      <path transform="rotate(120,24,24)" d="M24,24 C19,20 17,10 24,5 C31,10 29,20 24,24" fill="url(#goldG)"/>
+      {/* Petal 3 — bottom-right (rotate 240°) */}
+      <path transform="rotate(240,24,24)" d="M24,24 C19,20 17,10 24,5 C31,10 29,20 24,24" fill="url(#goldG)"/>
+
+      {/* Center gem */}
+      <circle cx="24" cy="24" r="2.2" fill="#f0d47a" opacity="0.9"/>
+    </svg>
+  )
+}
+
+// ── Bitbon banner image (place /public/bitbon-banner.jpg) ─────
+function BitbonBanner({ accent }) {
+  const [failed, setFailed] = useState(false)
+  return (
+    <div
+      className="relative rounded-xl overflow-hidden w-full"
+      style={{ height: 120, border: `1px solid ${accent}30` }}
+    >
+      {!failed ? (
+        <img
+          src="/bitbon-banner.jpg"
+          alt="Система Bitbon"
+          className="w-full h-full object-cover object-center"
+          onError={() => setFailed(true)}
+        />
+      ) : (
+        /* SVG fallback: glowing trefoil on dark bg */
+        <div className="w-full h-full flex items-center justify-center relative"
+          style={{ background: 'linear-gradient(135deg, #04091a, #0a1535)' }}
+        >
+          {/* Radial glow */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div style={{
+              width: 80, height: 80,
+              background: `radial-gradient(circle, ${accent}30 0%, transparent 70%)`,
+              borderRadius: '50%',
+            }}/>
+          </div>
+          {/* Trefoil */}
+          <svg width="72" height="72" viewBox="0 0 48 48" fill="none" style={{ filter: `drop-shadow(0 0 8px ${accent})` }}>
+            <defs>
+              <linearGradient id="bangold" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor={accent}/>
+                <stop offset="100%" stopColor="#38bdf8"/>
+              </linearGradient>
+            </defs>
+            <path d="M24,24 C19,20 17,10 24,5 C31,10 29,20 24,24" fill="url(#bangold)"/>
+            <path transform="rotate(120,24,24)" d="M24,24 C19,20 17,10 24,5 C31,10 29,20 24,24" fill="url(#bangold)"/>
+            <path transform="rotate(240,24,24)" d="M24,24 C19,20 17,10 24,5 C31,10 29,20 24,24" fill="url(#bangold)"/>
+            <circle cx="24" cy="24" r="2.5" fill={accent}/>
+          </svg>
+          <p className="absolute bottom-2 right-3 text-[8px] uppercase tracking-widest" style={{ color: `${accent}60` }}>
+            bitbon.space
+          </p>
+        </div>
+      )}
+    </div>
+  )
+}
 
 // ── Shared mini metric row ─────────────────────────────────────
 function MetricRow({ label, value, accent, bar, icon }) {
@@ -127,41 +216,8 @@ function BitbonSystemCard() {
         </div>
       </div>
 
-      {/* BBN balance highlight */}
-      <div
-        className="relative rounded-xl px-4 py-3 flex items-center justify-between"
-        style={{
-          background: `linear-gradient(135deg, ${C}15, ${C2}08)`,
-          border: `1px solid ${C}30`,
-        }}
-      >
-        <div>
-          <p className="text-[9px] uppercase tracking-widest" style={{ color: `${C2}70` }}>
-            Баланс BBN
-          </p>
-          <motion.p
-            className="text-2xl font-bold font-mono mt-0.5"
-            style={{ color: C2, textShadow: `0 0 20px ${C2}60` }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6 }}
-          >
-            2 450.88
-          </motion.p>
-        </div>
-        <div className="flex flex-col items-end gap-1">
-          <span className="text-[9px] text-zinc-600">≈ $1 840</span>
-          <div
-            className="flex items-center gap-1 px-2 py-0.5 rounded-full"
-            style={{ background: 'rgba(52,211,153,0.12)', border: '1px solid rgba(52,211,153,0.3)' }}
-          >
-            <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="#34d399" strokeWidth={3}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
-            </svg>
-            <span className="text-[9px] font-bold" style={{ color: '#34d399' }}>+3.2%</span>
-          </div>
-        </div>
-      </div>
+      {/* Banner image */}
+      <BitbonBanner accent={C2} />
 
       {/* Metrics */}
       <div className="relative flex flex-col -mt-1">
@@ -248,16 +304,12 @@ function OneSpaceCard() {
       {/* Logo + title */}
       <div className="relative flex items-start gap-3">
         <div
-          className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 text-2xl font-black"
+          className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden"
           style={{
-            background: `linear-gradient(135deg, ${P}35, ${P2}18)`,
-            border: `1.5px solid ${P2}60`,
-            boxShadow: `0 0 16px ${P}35, inset 0 0 12px ${P}12`,
-            color: P3,
-            fontFamily: 'serif',
+            boxShadow: `0 0 16px ${P}40`,
           }}
         >
-          1
+          <OneSpaceIcon size={48} />
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-[10px] uppercase tracking-[0.25em] font-semibold"
