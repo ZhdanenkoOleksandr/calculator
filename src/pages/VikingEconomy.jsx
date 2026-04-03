@@ -12,6 +12,7 @@ import ServiceMiniCarousel from '../components/viking/ServiceMiniCarousel'
 import BitTrade from '../components/viking/BitTrade'
 import MetaResources from '../components/viking/MetaResources'
 import NetworkAccessCard from '../components/viking/NetworkAccessCard'
+import AssetboxCard from '../components/viking/AssetboxCard'
 
 // ─── Mock data ────────────────────────────────────────────────
 const ECONOMY_VALUE = 247850
@@ -156,6 +157,9 @@ export default function VikingEconomy() {
       </header>
 
       <main className="max-w-6xl mx-auto px-4 py-6 md:py-10 space-y-6">
+
+        {/* ── ASSETBOX + OWNER ── */}
+        <AssetboxCard />
 
         {/* HERO */}
         <div className="flex justify-center">
