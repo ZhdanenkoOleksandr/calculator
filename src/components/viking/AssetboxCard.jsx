@@ -370,26 +370,48 @@ export default function AssetboxCard() {
           <GenesisSBadge />
         </div>
 
-        {/* Stats row */}
-        <div className="relative grid grid-cols-3 gap-2 mt-auto">
-          {[
-            { label: 'Проекти',  value: '30', color: '#fbbf24' },
-            { label: 'Активних', value: '6',  color: '#34d399' },
-            { label: 'З 2020',   value: '5р', color: '#fb923c' },
-          ].map(s => (
+        {/* Personal Brand WEB4 button */}
+        <a
+          href="https://www.bitbon.space/ua/services/providing/0x28e7c8958f654222cdf427e23419cb95c84ae0e7"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="relative flex items-center justify-between gap-3 rounded-xl px-4 py-3 mt-auto group transition-all duration-200"
+          style={{
+            background: 'linear-gradient(135deg, rgba(26,109,255,0.15), rgba(0,200,255,0.08))',
+            border: '1px solid rgba(0,200,255,0.35)',
+            boxShadow: '0 0 20px rgba(0,200,255,0.1)',
+          }}
+        >
+          {/* Left: icon + label */}
+          <div className="flex items-center gap-2.5">
             <div
-              key={s.label}
-              className="rounded-xl px-2 py-2 flex flex-col items-center gap-0.5"
+              className="w-8 h-8 rounded-lg flex items-center justify-center text-sm flex-shrink-0"
               style={{
-                background: `${s.color}0d`,
-                border: `1px solid ${s.color}22`,
+                background: 'rgba(0,200,255,0.12)',
+                border: '1px solid rgba(0,200,255,0.3)',
+                color: '#00c8ff',
               }}
             >
-              <span className="text-base font-bold font-mono" style={{ color: s.color }}>{s.value}</span>
-              <span className="text-[8px] text-zinc-600 text-center">{s.label}</span>
+              ᛒ
             </div>
-          ))}
-        </div>
+            <div>
+              <p className="text-[9px] uppercase tracking-[0.18em] font-semibold" style={{ color: 'rgba(0,200,255,0.6)' }}>
+                Bitbon System
+              </p>
+              <p className="text-sm font-bold text-white leading-tight">
+                Особистий Бренд <span style={{ color: '#00c8ff' }}>WEB4</span>
+              </p>
+            </div>
+          </div>
+
+          {/* Right: arrow */}
+          <svg
+            className="w-4 h-4 flex-shrink-0 transition-transform duration-200 group-hover:translate-x-0.5"
+            fill="none" viewBox="0 0 24 24" stroke="#00c8ff" strokeWidth={2.5}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+          </svg>
+        </a>
 
         {/* Bottom warm divider */}
         <div className="relative flex items-center gap-2 -mt-1">
