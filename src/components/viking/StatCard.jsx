@@ -13,7 +13,7 @@ const THEMES = {
   orange:  { glow: 'rgba(251,146,60,0.3)',   border: 'rgba(251,146,60,0.25)', bg: 'rgba(251,146,60,0.06)',  bar: 'linear-gradient(90deg,#c2410c,#fb923c)',  label: '#fb923c', dot: '#f97316' },
 }
 
-export default function StatCard({ title, value, subtitle, detail, color = 'purple', barPct, icon, delay = 0 }) {
+export default function StatCard({ title, value, subtitle, detail, color = 'purple', barPct, icon, delay = 0, statusStats }) {
   const t = THEMES[color] ?? THEMES.blue   // fallback — never undefined
 
   return (
@@ -77,6 +77,25 @@ export default function StatCard({ title, value, subtitle, detail, color = 'purp
               transition={{ duration: 1.2, delay: delay + 0.4, ease: [0.25, 1, 0.5, 1] }}
             />
           </div>
+        </div>
+      )}
+
+      {/* Optional status stats (e.g. Активный / Готовится / Разработка) */}
+      {statusStats && (
+        <div className="flex gap-2">
+          {statusStats.map((s) => (
+            <div
+              key={s.label}
+              className="flex-1 rounded-xl px-2.5 py-2 flex flex-col items-center gap-0.5"
+              style={{
+                background: `${s.dotColor}12`,
+                border: `1px solid ${s.dotColor}28`,
+              }}
+            >
+              <span className="text-base font-bold font-mono" style={{ color: s.dotColor }}>{s.value}</span>
+              <span className="text-[8px] text-zinc-600 text-center leading-tight">{s.label}</span>
+            </div>
+          ))}
         </div>
       )}
 
