@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import CoreBalanceCard from '../components/viking/CoreBalanceCard'
 import StatCard from '../components/viking/StatCard'
@@ -117,6 +117,8 @@ function SectionDivider({ label, color = '#a78bfa', bg = 'rgba(139,92,246,0.08)'
 }
 
 export default function VikingEconomy() {
+  const [bitbonOpen, setBitbonOpen] = useState(false)
+  const [onespaceoOpen, setOnespaceoOpen] = useState(false)
   return (
     <div className="min-h-screen font-inter" style={{ background: '#080810' }}>
       {/* Header */}
@@ -159,11 +161,16 @@ export default function VikingEconomy() {
 
       <main className="max-w-6xl mx-auto px-4 py-6 md:py-10 space-y-6">
 
-        {/* ── ASSETBOX + OWNER ── */}
-        <AssetboxCard />
+        {/* ── ASSETBOX + OWNER + expand buttons ── */}
+        <AssetboxCard
+          bitbonOpen={bitbonOpen}
+          onespaceoOpen={onespaceoOpen}
+          onBitbonToggle={() => setBitbonOpen(v => !v)}
+          onOnespaceToggle={() => setOnespaceoOpen(v => !v)}
+        />
 
-        {/* ── ECOSYSTEM CONNECTIONS ── */}
-        <EcosystemConnections />
+        {/* ── ECOSYSTEM CONNECTIONS (animated expand) ── */}
+        <EcosystemConnections showBitbon={bitbonOpen} showOnespace={onespaceoOpen} />
 
         {/* HERO */}
         <div className="flex justify-center">

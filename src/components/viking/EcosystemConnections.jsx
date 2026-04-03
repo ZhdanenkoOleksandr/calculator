@@ -1,5 +1,5 @@
 import React from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 
 // ── Shared mini metric row ─────────────────────────────────────
 function MetricRow({ label, value, accent, bar, icon }) {
@@ -349,11 +349,54 @@ function OneSpaceCard() {
 }
 
 // ── Main export ───────────────────────────────────────────────
-export default function EcosystemConnections() {
+const SLIDE = {
+  initial: { opacity: 0, y: -12, height: 0 },
+  animate: { opacity: 1, y: 0, height: 'auto' },
+  exit:    { opacity: 0, y: -8,  height: 0 },
+}
+
+export default function EcosystemConnections({ showBitbon, showOnespace }) {
+  const visible = showBitbon || showOnespace
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      <BitbonSystemCard />
-      <OneSpaceCard />
-    </div>
+    <AnimatePresence initial={false}>
+      {visible && (
+        <motion.div
+          key="eco"
+          initial={SLIDE.initial}
+          animate={SLIDE.animate}
+          exit={SLIDE.exit}
+          transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
+          className="overflow-hidden"
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-0.5">
+            <AnimatePresence initial={false}>
+              {showBitbon && (
+                <motion.div key="bitbon"
+                  initial={{ opacity: 0, x: -16 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -16 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <BitbonSystemCard />
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <AnimatePresence initial={false}>
+              {showOnespace && (
+                <motion.div key="onespace"
+                  initial={{ opacity: 0, x: 16 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 16 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <OneSpaceCard />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   )
 }

@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 
-// ── Viking emblem SVG (replace <img src="/viking-logo.png"> when file is added) ──
+// ── Viking emblem — real image with rich SVG fallback ─────────
 function VikingEmblem({ size = 80 }) {
+  const [imgFailed, setImgFailed] = useState(false)
   return (
     <div
       className="relative flex items-center justify-center rounded-2xl overflow-hidden flex-shrink-0"
@@ -14,31 +15,50 @@ function VikingEmblem({ size = 80 }) {
         boxShadow: '0 0 24px rgba(56,189,248,0.2), inset 0 0 20px rgba(56,189,248,0.05)',
       }}
     >
-      {/* Try to load the actual image, fallback to SVG rune */}
-      <img
-        src="/viking-logo.png"
-        alt="Digital Viking Wallet"
-        className="w-full h-full object-cover"
-        onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex' }}
-      />
-      {/* Fallback SVG rune */}
-      <div
-        className="absolute inset-0 items-center justify-center"
-        style={{ display: 'none' }}
-      >
-        <svg width={size * 0.6} height={size * 0.6} viewBox="0 0 60 60" fill="none">
-          {/* Horned helmet */}
-          <ellipse cx="30" cy="36" rx="18" ry="14" fill="rgba(56,189,248,0.15)" stroke="#38bdf8" strokeWidth="1.5" />
-          <rect x="18" y="28" width="24" height="14" rx="2" fill="rgba(56,189,248,0.1)" stroke="#38bdf8" strokeWidth="1.5" />
-          {/* Horns */}
-          <path d="M12 28 Q6 18 10 10 Q14 18 18 26" fill="rgba(56,189,248,0.15)" stroke="#38bdf8" strokeWidth="1.5" />
-          <path d="M48 28 Q54 18 50 10 Q46 18 42 26" fill="rgba(56,189,248,0.15)" stroke="#38bdf8" strokeWidth="1.5" />
-          {/* Eye slit */}
-          <rect x="20" y="33" width="20" height="3" rx="1.5" fill="rgba(56,189,248,0.4)" />
-          {/* Rune Tiwaz at bottom */}
-          <text x="30" y="55" textAnchor="middle" fontSize="10" fill="#38bdf8" fontFamily="serif">ᛏ</text>
+      {!imgFailed ? (
+        <img
+          src="/viking-logo.png"
+          alt="Digital Viking Wallet"
+          className="w-full h-full object-cover"
+          onError={() => setImgFailed(true)}
+        />
+      ) : (
+        /* Fallback: Viking warrior SVG matching the logo */
+        <svg width={size} height={size} viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          {/* Background glow */}
+          <circle cx="40" cy="42" r="28" fill="rgba(56,189,248,0.06)" />
+
+          {/* Left horn */}
+          <path d="M16 34 Q8 20 14 10 Q18 18 22 30" fill="#94a3b8" stroke="#64748b" strokeWidth="1"/>
+          {/* Right horn */}
+          <path d="M64 34 Q72 20 66 10 Q62 18 58 30" fill="#94a3b8" stroke="#64748b" strokeWidth="1"/>
+
+          {/* Helmet */}
+          <ellipse cx="40" cy="32" rx="20" ry="12" fill="#94a3b8" stroke="#64748b" strokeWidth="1.5"/>
+          <rect x="20" y="28" width="40" height="18" rx="3" fill="#94a3b8" stroke="#64748b" strokeWidth="1.5"/>
+          {/* Helmet nose guard */}
+          <rect x="36" y="36" width="8" height="10" rx="2" fill="#64748b"/>
+          {/* Eye openings */}
+          <ellipse cx="32" cy="38" rx="5" ry="3" fill="#1e293b"/>
+          <ellipse cx="48" cy="38" rx="5" ry="3" fill="#1e293b"/>
+
+          {/* Beard — golden flames */}
+          <path d="M22 50 Q18 58 22 68 Q26 62 28 70 Q30 60 32 72 Q34 62 36 74 Q38 63 40 75 Q42 63 44 74 Q46 62 48 72 Q50 60 52 70 Q54 62 58 68 Q62 58 58 50 Z"
+            fill="#fbbf24" stroke="#f59e0b" strokeWidth="0.5"/>
+          {/* Beard highlight */}
+          <path d="M26 52 Q24 60 26 66 Q29 59 31 67 Q33 58 35 68 Q37 60 39 70 Q41 60 43 68 Q45 58 47 67 Q49 59 52 66 Q54 60 52 52"
+            fill="#fcd34d" opacity="0.6"/>
+
+          {/* Face skin */}
+          <ellipse cx="40" cy="46" rx="16" ry="10" fill="#d4a96a"/>
+          {/* Mustache */}
+          <path d="M30 50 Q35 54 40 52 Q45 54 50 50" stroke="#92400e" strokeWidth="2" fill="none" strokeLinecap="round"/>
+
+          {/* Eyebrows fierce */}
+          <path d="M28 37 Q32 34 36 36" stroke="#78350f" strokeWidth="1.5" strokeLinecap="round"/>
+          <path d="M44 36 Q48 34 52 37" stroke="#78350f" strokeWidth="1.5" strokeLinecap="round"/>
         </svg>
-      </div>
+      )}
     </div>
   )
 }
@@ -205,14 +225,15 @@ function GenesisSBadge() {
 }
 
 // ── Main component ────────────────────────────────────────────
-export default function AssetboxCard() {
+export default function AssetboxCard({ bitbonOpen, onespaceoOpen, onBitbonToggle, onOnespaceToggle }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+      className="flex flex-col gap-3"
     >
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       {/* ── LEFT: Assetbox / Wallet (Bitbon company blue tones) ── */}
       <div
         className="relative rounded-2xl p-5 flex flex-col gap-4 overflow-hidden"
@@ -420,6 +441,66 @@ export default function AssetboxCard() {
             Digital Viking
           </span>
         </div>
+      </div>
+    </div>{/* end grid */}
+
+      {/* ── Expand toggle buttons ── */}
+      <div className="grid grid-cols-2 gap-3">
+        {/* Система Bitbon button */}
+        <button
+          onClick={onBitbonToggle}
+          className="flex items-center justify-between gap-2 rounded-xl px-4 py-2.5 transition-all duration-200 group"
+          style={{
+            background: bitbonOpen
+              ? 'linear-gradient(135deg, rgba(26,109,255,0.2), rgba(0,200,255,0.12))'
+              : 'rgba(26,109,255,0.07)',
+            border: `1px solid ${bitbonOpen ? 'rgba(0,200,255,0.45)' : 'rgba(0,200,255,0.2)'}`,
+            boxShadow: bitbonOpen ? '0 0 16px rgba(0,200,255,0.15)' : 'none',
+          }}
+        >
+          <div className="flex items-center gap-2">
+            <span className="text-sm leading-none" style={{ color: '#00c8ff' }}>ᛒ</span>
+            <span className="text-xs font-bold" style={{ color: bitbonOpen ? '#00c8ff' : '#60a5fa' }}>
+              Система Bitbon
+            </span>
+          </div>
+          <motion.svg
+            className="w-3.5 h-3.5 flex-shrink-0"
+            fill="none" viewBox="0 0 24 24" stroke="#00c8ff" strokeWidth={2.5}
+            animate={{ rotate: bitbonOpen ? 180 : 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          </motion.svg>
+        </button>
+
+        {/* OneSpace button */}
+        <button
+          onClick={onOnespaceToggle}
+          className="flex items-center justify-between gap-2 rounded-xl px-4 py-2.5 transition-all duration-200 group"
+          style={{
+            background: onespaceoOpen
+              ? 'linear-gradient(135deg, rgba(124,58,237,0.2), rgba(167,139,250,0.12))'
+              : 'rgba(124,58,237,0.07)',
+            border: `1px solid ${onespaceoOpen ? 'rgba(167,139,250,0.45)' : 'rgba(167,139,250,0.2)'}`,
+            boxShadow: onespaceoOpen ? '0 0 16px rgba(167,139,250,0.15)' : 'none',
+          }}
+        >
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-black leading-none" style={{ color: '#a78bfa', fontFamily: 'serif' }}>1</span>
+            <span className="text-xs font-bold" style={{ color: onespaceoOpen ? '#a78bfa' : '#818cf8' }}>
+              OneSpace
+            </span>
+          </div>
+          <motion.svg
+            className="w-3.5 h-3.5 flex-shrink-0"
+            fill="none" viewBox="0 0 24 24" stroke="#a78bfa" strokeWidth={2.5}
+            animate={{ rotate: onespaceoOpen ? 180 : 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          </motion.svg>
+        </button>
       </div>
     </motion.div>
   )
