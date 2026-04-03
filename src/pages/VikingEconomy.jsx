@@ -13,6 +13,7 @@ import BitTrade from '../components/viking/BitTrade'
 import MetaResources from '../components/viking/MetaResources'
 import NetworkAccessCard from '../components/viking/NetworkAccessCard'
 import AssetboxCard from '../components/viking/AssetboxCard'
+import EcosystemConnections from '../components/viking/EcosystemConnections'
 
 // ─── Mock data ────────────────────────────────────────────────
 const ECONOMY_VALUE = 247850
@@ -160,6 +161,9 @@ export default function VikingEconomy() {
 
         {/* ── ASSETBOX + OWNER ── */}
         <AssetboxCard />
+
+        {/* ── ECOSYSTEM CONNECTIONS ── */}
+        <EcosystemConnections />
 
         {/* HERO */}
         <div className="flex justify-center">
