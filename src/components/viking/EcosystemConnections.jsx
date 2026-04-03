@@ -201,6 +201,7 @@ function OneSpaceCard() {
     { label: 'Публікацій',            value: '124',        accent: P2           },
     { label: 'Медіа-матеріалів',      value: '38',         accent: P3, bar: 38 },
     { label: 'Рейтинг у спільноті',   value: 'Top 5%',     accent: '#fb923c'    },
+    { label: 'Сплай',                 value: '1 250 BBN',  accent: P2           },
     { label: 'Остання активність',     value: 'Сьогодні',   accent: '#34d399'    },
   ]
 
