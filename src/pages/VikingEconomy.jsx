@@ -11,6 +11,7 @@ import DigitalIntuition from '../components/viking/DigitalIntuition'
 import ServiceMiniCarousel from '../components/viking/ServiceMiniCarousel'
 import BitTrade from '../components/viking/BitTrade'
 import MetaResources from '../components/viking/MetaResources'
+import NetworkAccessCard from '../components/viking/NetworkAccessCard'
 
 // ─── Mock data ────────────────────────────────────────────────
 const ECONOMY_VALUE = 247850
@@ -161,16 +162,9 @@ export default function VikingEconomy() {
           <CoreBalanceCard value={ECONOMY_VALUE} growthPct={GROWTH_PCT} />
         </div>
 
-        {/* NETWORK + ASSETS (2 main stat cards) */}
+        {/* NETWORK + ASSETS */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <StatCard title="Network Access" value="30" subtitle="Метаресурсов в сети"
-            color="blue" icon="ᛗ" delay={0}
-            statusStats={[
-              { label: 'Активный',          value: 6,  dotColor: '#34d399' },
-              { label: 'Готовится к запуску', value: 9, dotColor: '#fbbf24' },
-              { label: 'Разработка',        value: 15, dotColor: '#60a5fa' },
-            ]}
-          />
+          <NetworkAccessCard delay={0} />
           <StatCard title="Assets" value="23" subtitle="Active metaresources"
             detail="Capacity" color="gold" barPct={58} icon="ᚠ" delay={0.1} />
         </div>
