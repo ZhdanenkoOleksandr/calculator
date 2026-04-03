@@ -1,6 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { motion, useAnimation } from 'framer-motion'
 
+// ── Token access cards (front face grid) ──────────────────────
+const TOKEN_CARDS = [
+  { name: 'Viking Core',  icon: 'ᚹ', color: '#a78bfa', dot: '#7c3aed', status: 'Active',  share: 34 },
+  { name: 'BeautyNet',    icon: 'ᛖ', color: '#fb7185', dot: '#be123c', status: 'Active',  share: 18 },
+  { name: 'Scanerbon',    icon: 'ᚲ', color: '#34d399', dot: '#047857', status: 'Active',  share: 22 },
+  { name: 'AuraBond',     icon: 'ᚢ', color: '#818cf8', dot: '#4338ca', status: 'Active',  share: 11 },
+  { name: 'DAO District', icon: 'ᛒ', color: '#3f3f46', dot: '#27272a', status: 'Locked',  share: 0  },
+  { name: 'NetTrack',     icon: 'ᛗ', color: '#3f3f46', dot: '#27272a', status: 'Locked',  share: 0  },
+]
+const ACTIVE_COUNT = TOKEN_CARDS.filter(t => t.status === 'Active').length
+
 // ── Status config ─────────────────────────────────────────────
 const ST = {
   active: { label: 'Активный',           color: '#34d399', bg: 'rgba(52,211,153,0.12)',  border: 'rgba(52,211,153,0.3)'  },
@@ -249,75 +260,133 @@ function BackFace({ onFlip }) {
   )
 }
 
+// ── Single token card ─────────────────────────────────────────
+function TokenCard({ card, index }) {
+  const locked = card.status === 'Locked'
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay: index * 0.05 }}
+      className="rounded-xl p-3 flex flex-col gap-2 relative"
+      style={{
+        background: locked
+          ? 'rgba(255,255,255,0.02)'
+          : `linear-gradient(135deg, ${card.color}12, ${card.color}06)`,
+        border: `1px solid ${locked ? 'rgba(255,255,255,0.06)' : card.color + '35'}`,
+        boxShadow: locked ? 'none' : `0 0 16px ${card.color}18`,
+        opacity: locked ? 0.5 : 1,
+      }}
+    >
+      {/* Top row: icon + dot/lock */}
+      <div className="flex items-start justify-between">
+        <div
+          className="w-7 h-7 rounded-lg flex items-center justify-center text-sm"
+          style={{
+            background: locked ? 'rgba(255,255,255,0.04)' : `${card.color}20`,
+            border: `1px solid ${locked ? 'rgba(255,255,255,0.08)' : card.color + '40'}`,
+            color: locked ? '#52525b' : card.color,
+          }}
+        >
+          {card.icon}
+        </div>
+        {locked ? (
+          <svg className="w-3.5 h-3.5 text-zinc-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+          </svg>
+        ) : (
+          <motion.div
+            className="w-2 h-2 rounded-full"
+            style={{ background: card.dot, boxShadow: `0 0 6px ${card.dot}` }}
+            animate={{ opacity: [1, 0.4, 1] }}
+            transition={{ duration: 2.2, repeat: Infinity, delay: index * 0.3 }}
+          />
+        )}
+      </div>
+
+      {/* Name + status */}
+      <div>
+        <p className="text-xs font-bold text-zinc-200 leading-tight">{card.name}</p>
+        <p className="text-[10px] mt-0.5 font-medium" style={{ color: locked ? '#52525b' : card.color }}>
+          {card.status}
+        </p>
+      </div>
+
+      {/* Project share bar */}
+      <div className="mt-auto">
+        <div className="flex justify-between items-center mb-1">
+          <span className="text-[8px] text-zinc-600">Доля проекта</span>
+          <span className="text-[9px] font-mono font-bold" style={{ color: locked ? '#52525b' : card.color }}>
+            {card.share}%
+          </span>
+        </div>
+        <div className="h-0.5 rounded-full bg-white/5 overflow-hidden">
+          <motion.div
+            className="h-full rounded-full"
+            style={{ background: locked ? '#3f3f46' : card.color }}
+            initial={{ width: 0 }}
+            animate={{ width: `${card.share}%` }}
+            transition={{ duration: 1, delay: 0.3 + index * 0.08, ease: [0.25, 1, 0.5, 1] }}
+          />
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
 // ── Front face ────────────────────────────────────────────────
 function FrontFace({ onFlip }) {
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-4">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
           <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-semibold">Access Tokens</p>
-          <motion.p
-            className="text-3xl font-bold font-mono mt-1"
-            style={{ color: '#60a5fa', textShadow: '0 0 20px rgba(96,165,250,0.4)' }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-          >
-            {ALL_TOTAL}
-          </motion.p>
-          <p className="text-xs text-zinc-500 mt-0.5">Метаресурсов в сети</p>
+          <p className="text-white font-bold text-xl mt-0.5">Network Access</p>
         </div>
         <div
-          className="w-10 h-10 rounded-xl flex items-center justify-center text-lg flex-shrink-0"
-          style={{ background: 'rgba(96,165,250,0.08)', border: '1px solid rgba(96,165,250,0.2)' }}
+          className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold"
+          style={{
+            background: 'rgba(52,211,153,0.1)',
+            border: '1px solid rgba(52,211,153,0.3)',
+            color: '#34d399',
+          }}
         >
-          ᛗ
+          <motion.div
+            className="w-1.5 h-1.5 rounded-full bg-emerald-400"
+            animate={{ opacity: [1, 0.3, 1] }}
+            transition={{ duration: 1.8, repeat: Infinity }}
+          />
+          {ACTIVE_COUNT}/{TOKEN_CARDS.length} active
         </div>
       </div>
 
-      {/* Status stats */}
-      <div className="flex gap-2">
-        {[
-          { label: 'Активный',          value: ALL_ACTIVE, color: '#34d399', bg: 'rgba(52,211,153,0.1)',  border: 'rgba(52,211,153,0.22)' },
-          { label: 'Готовится',         value: ALL_SOON,   color: '#fbbf24', bg: 'rgba(251,191,36,0.1)',  border: 'rgba(251,191,36,0.22)' },
-          { label: 'Разработка',        value: ALL_DEV,    color: '#60a5fa', bg: 'rgba(96,165,250,0.1)',  border: 'rgba(96,165,250,0.22)' },
-        ].map(s => (
-          <div
-            key={s.label}
-            className="flex-1 rounded-xl px-2 py-2 flex flex-col items-center gap-0.5"
-            style={{ background: s.bg, border: `1px solid ${s.border}` }}
-          >
-            <span className="text-base font-bold font-mono" style={{ color: s.color }}>{s.value}</span>
-            <span className="text-[8px] text-zinc-600 text-center leading-tight">{s.label}</span>
-          </div>
+      {/* 2×3 token grid */}
+      <div className="grid grid-cols-3 gap-2.5">
+        {TOKEN_CARDS.map((card, i) => (
+          <TokenCard key={card.name} card={card} index={i} />
         ))}
       </div>
 
-      {/* Flip button */}
+      {/* Bottom flip bar */}
       <button
         onClick={onFlip}
-        className="w-full flex items-center justify-center gap-2 rounded-xl py-2 text-xs font-bold transition-all duration-150"
+        className="w-full flex items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-semibold transition-all duration-200 group"
         style={{
-          background: 'linear-gradient(135deg, rgba(96,165,250,0.12), rgba(56,189,248,0.08))',
-          border: '1px solid rgba(96,165,250,0.3)',
-          color: '#60a5fa',
+          background: 'rgba(56,189,248,0.05)',
+          border: '1px solid rgba(56,189,248,0.15)',
+          color: '#38bdf8',
         }}
       >
-        <span className="text-base leading-none">ᛟ</span>
+        <span className="text-sm leading-none">ᚹ</span>
         Метаресурсы
-        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        <svg
+          className="w-3.5 h-3.5 transition-transform duration-300 group-hover:rotate-180"
+          fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
         </svg>
       </button>
-
-      {/* Bottom pulse dot */}
-      <motion.div
-        className="absolute bottom-3 right-3 w-1.5 h-1.5 rounded-full"
-        style={{ background: '#3b82f6', boxShadow: '0 0 6px #3b82f6' }}
-        animate={{ opacity: [1, 0.3, 1], scale: [1, 1.4, 1] }}
-        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
-      />
     </div>
   )
 }
@@ -349,17 +418,11 @@ export default function NetworkAccessCard({ delay = 0 }) {
       transition={{ duration: 0.5, delay }}
       className="relative rounded-2xl p-5 overflow-hidden"
       style={{
-        background: 'rgba(59,130,246,0.06)',
-        border: '1px solid rgba(59,130,246,0.3)',
-        boxShadow: '0 0 30px rgba(59,130,246,0.3), inset 0 0 20px rgba(255,255,255,0.01)',
+        background: 'rgba(255,255,255,0.03)',
+        border: '1px solid rgba(255,255,255,0.08)',
         backdropFilter: 'blur(12px)',
       }}
     >
-      {/* Ambient glow */}
-      <div
-        className="absolute -top-8 -right-8 w-24 h-24 rounded-full pointer-events-none"
-        style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.3) 0%, transparent 70%)' }}
-      />
 
       <motion.div animate={controls}>
         {side === 'front'
