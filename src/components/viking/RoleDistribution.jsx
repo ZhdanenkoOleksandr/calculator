@@ -13,16 +13,39 @@ const ROLE_THEME = {
   teal:    { bar: 'linear-gradient(90deg,#0f766e,#2dd4bf)',   glow: 'rgba(45,212,191,0.35)',   label: '#2dd4bf', bg: 'rgba(45,212,191,0.07)',   border: 'rgba(45,212,191,0.22)'   },
 }
 
-const ACADEMY_ROLES = [
-  { name: 'Провайдер',  icon: 'ᚹ', color: 'blue',    progress: 85, launching: false },
-  { name: 'Создатель',  icon: 'ᚷ', color: 'purple',  progress: 72, launching: false },
-  { name: 'Инвестор',   icon: 'ᚠ', color: 'gold',    progress: 68, launching: false },
-  { name: 'Ментор',     icon: 'ᚱ', color: 'emerald', progress: 45, launching: false },
-  { name: 'Аналитик',   icon: 'ᛃ', color: 'cyan',    progress: 38, launching: false },
-  { name: 'Архитектор', icon: 'ᛟ', color: 'indigo',  progress: 29, launching: false },
-  { name: 'Амбассадор', icon: 'ᛖ', color: 'rose',    progress: 0,  launching: true  },
-  { name: 'Куратор',    icon: 'ᛇ', color: 'orange',  progress: 0,  launching: true  },
-  { name: 'Модератор',  icon: 'ᛏ', color: 'teal',    progress: 0,  launching: true  },
+// ── Status → Roles mapping (from Bitbon System docs) ──────────
+const STATUS_ROLES = [
+  {
+    status: 'Оператор', icon: 'ᛟ', color: 'blue',
+    roles: [
+      { name: 'Перший оператор',    desc: 'Провадить діяльність із розвитку Соціальної мережі «Система Bitbon» і має в оперативному управлінні первісний актив для цифрового активу Bitbon.' },
+      { name: 'Регіональний оператор', desc: 'Провадить діяльність з інтеграції Системи Bitbon із ринковою інфраструктурою конкретного регіону.' },
+      { name: 'Акаунт-оператор',   desc: 'Провадить діяльність із верифікації облікових даних Користувачів Системи Bitbon незалежно від їх резидентства.' },
+    ],
+  },
+  {
+    status: 'Провайдер', icon: 'ᚹ', color: 'purple',
+    roles: [
+      { name: 'Реєстратор',   desc: 'Фіксує правочини в Системі Bitbon із метою посвідчення юридичного факту через досягнення консенсусу за алгоритмом Community PoS.' },
+      { name: 'Партиціонер',  desc: 'Веде облік правочинів у Системі Bitbon через надання належних йому обчислювальних і телекомунікаційних ресурсів.' },
+    ],
+  },
+  {
+    status: "Контриб'ютор", icon: 'ᚱ', color: 'gold',
+    roles: [
+      { name: 'Контрактат',      desc: 'Є учасником комерційного проекту, зацікавленим у його реалізації та фінансуванні за допомогою інфраструктури Системи Bitbon.' },
+      { name: 'Стейкхолдер',     desc: 'Є учасником комерційного проекту, який прийняв пропозицію від Контрактата, виділивши необхідні фінансові ресурси за допомогою інфраструктури Системи Bitbon.' },
+      { name: 'Bitup-Агентство', desc: "Є обов'язковим учасником комерційного проекту й наділяє зобов'язаннями з підготовки та супроводу проекту Контрактата на користь Стейкхолдерів." },
+    ],
+  },
+  {
+    status: 'Інтегратор', icon: 'ᛖ', color: 'emerald',
+    roles: [
+      { name: 'Постачальник', desc: 'Просуває свої продукти та/або послуги в порядку, передбаченому в Системі Bitbon.' },
+      { name: 'Розробник',    desc: 'Використовує інтерфейс програмування додатків для створення сервісів Користувачів Системи Bitbon.' },
+      { name: 'Промоутер',    desc: 'Особисто та/або за допомогою належних йому публічних інформаційних ресурсів просуває базові сервіси Системи Bitbon для нових Користувачів.' },
+    ],
+  },
 ]
 
 const ACADEMY_PROFESSIONS = [
@@ -80,7 +103,86 @@ function RoleBar({ name, pct, income, color, icon, animKey }) {
   )
 }
 
-// ── Back face: academy item block ─────────────────────────────
+// ── Roles tab: status selector + roles list ───────────────────
+function RolesTab() {
+  const [statusIdx, setStatusIdx] = useState(0)
+  const current = STATUS_ROLES[statusIdx]
+  const t = ROLE_THEME[current.color] ?? ROLE_THEME.blue
+
+  return (
+    <div className="flex gap-2.5 h-full" style={{ minHeight: 0 }}>
+      {/* Left: status buttons */}
+      <div className="flex flex-col gap-1.5 flex-shrink-0" style={{ width: 96 }}>
+        {STATUS_ROLES.map((s, i) => {
+          const st = ROLE_THEME[s.color] ?? ROLE_THEME.blue
+          const active = i === statusIdx
+          return (
+            <button
+              key={s.status}
+              onClick={() => setStatusIdx(i)}
+              className="flex items-center gap-1.5 rounded-xl px-2.5 py-2 text-left transition-all duration-200 w-full"
+              style={active ? {
+                background: `${st.label}18`,
+                border: `1px solid ${st.label}45`,
+                boxShadow: `0 0 10px ${st.label}20`,
+              } : {
+                background: 'rgba(255,255,255,0.03)',
+                border: '1px solid rgba(255,255,255,0.07)',
+              }}
+            >
+              <span className="text-sm leading-none flex-shrink-0" style={{ color: active ? st.label : '#52525b' }}>
+                {s.icon}
+              </span>
+              <span className="text-[10px] font-semibold leading-tight" style={{ color: active ? st.label : '#52525b' }}>
+                {s.status}
+              </span>
+            </button>
+          )
+        })}
+      </div>
+
+      {/* Vertical divider */}
+      <div className="w-px self-stretch rounded-full" style={{ background: `${t.label}20` }} />
+
+      {/* Right: roles for selected status */}
+      <div className="flex-1 min-w-0 flex flex-col gap-2 overflow-y-auto" style={{ scrollbarWidth: 'none' }}>
+        {/* Status label */}
+        <p className="text-[9px] uppercase tracking-wider font-semibold leading-tight" style={{ color: t.label + 'aa' }}>
+          Статус «{current.status}» · ролі
+        </p>
+
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={current.status}
+            initial={{ opacity: 0, x: 10 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -10 }}
+            transition={{ duration: 0.18 }}
+            className="flex flex-col gap-2"
+          >
+            {current.roles.map((role) => (
+              <div key={role.name} className="flex flex-col gap-1">
+                {/* Role name badge */}
+                <span
+                  className="text-[10px] font-bold px-2 py-0.5 rounded self-start"
+                  style={{ background: `${t.label}18`, border: `1px solid ${t.label}35`, color: t.label }}
+                >
+                  {role.name}
+                </span>
+                {/* Description */}
+                <p className="text-[9.5px] text-zinc-500 leading-relaxed">
+                  {role.desc}
+                </p>
+              </div>
+            ))}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </div>
+  )
+}
+
+// ── Professions tab item ───────────────────────────────────────
 function AcademyItem({ name, icon, color, progress, launching, index }) {
   const t = ROLE_THEME[color] ?? ROLE_THEME.blue
   return (
@@ -105,27 +207,18 @@ function AcademyItem({ name, icon, color, progress, launching, index }) {
       >
         {icon}
       </div>
-
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between mb-1">
           <span className="text-xs font-semibold" style={{ color: launching ? '#52525b' : '#e4e4e7' }}>
             {name}
           </span>
           {launching ? (
-            <span
-              className="text-[9px] font-semibold px-1.5 py-0.5 rounded-full flex-shrink-0"
-              style={{
-                background: 'rgba(251,191,36,0.1)',
-                border: '1px solid rgba(251,191,36,0.25)',
-                color: '#fbbf24',
-              }}
-            >
+            <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded-full flex-shrink-0"
+              style={{ background: 'rgba(251,191,36,0.1)', border: '1px solid rgba(251,191,36,0.25)', color: '#fbbf24' }}>
               готовится к запуску
             </span>
           ) : (
-            <span className="text-[10px] font-mono flex-shrink-0" style={{ color: t.label }}>
-              {progress}%
-            </span>
+            <span className="text-[10px] font-mono flex-shrink-0" style={{ color: t.label }}>{progress}%</span>
           )}
         </div>
         {!launching && (
@@ -147,7 +240,6 @@ function AcademyItem({ name, icon, color, progress, launching, index }) {
 // ── Back face content ─────────────────────────────────────────
 function AcademyFace({ onFlipBack }) {
   const [tab, setTab] = useState('roles')
-  const items = tab === 'roles' ? ACADEMY_ROLES : ACADEMY_PROFESSIONS
 
   return (
     <div className="flex flex-col gap-3 h-full">
@@ -165,15 +257,10 @@ function AcademyFace({ onFlipBack }) {
           </p>
           <p className="text-white font-bold text-lg mt-0.5">Платформенная Экономика</p>
         </div>
-
-        {/* Flip back button (web) */}
         <button
           onClick={onFlipBack}
           className="hidden sm:flex w-7 h-7 rounded-lg items-center justify-center transition-all duration-150"
-          style={{
-            background: 'rgba(167,139,250,0.1)',
-            border: '1px solid rgba(167,139,250,0.25)',
-          }}
+          style={{ background: 'rgba(167,139,250,0.1)', border: '1px solid rgba(167,139,250,0.25)' }}
           title="Вернуться к ролям"
         >
           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="#a78bfa" strokeWidth={2.5}>
@@ -187,10 +274,7 @@ function AcademyFace({ onFlipBack }) {
         className="flex rounded-xl p-0.5 gap-0.5"
         style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
       >
-        {[
-          { key: 'roles',       label: 'Роли' },
-          { key: 'professions', label: 'Профессии' },
-        ].map(({ key, label }) => (
+        {[{ key: 'roles', label: 'Роли' }, { key: 'professions', label: 'Профессии' }].map(({ key, label }) => (
           <button
             key={key}
             onClick={() => setTab(key)}
@@ -200,32 +284,35 @@ function AcademyFace({ onFlipBack }) {
               border: '1px solid rgba(167,139,250,0.3)',
               color: '#a78bfa',
               boxShadow: '0 0 10px rgba(167,139,250,0.2)',
-            } : {
-              background: 'transparent',
-              border: '1px solid transparent',
-              color: '#52525b',
-            }}
+            } : { background: 'transparent', border: '1px solid transparent', color: '#52525b' }}
           >
             {label}
           </button>
         ))}
       </div>
 
-      {/* Items list */}
-      <div className="flex flex-col gap-2 flex-1 overflow-y-auto" style={{ maxHeight: 232 }}>
+      {/* Content area */}
+      <div className="flex-1 overflow-hidden" style={{ minHeight: 0 }}>
         <AnimatePresence mode="wait">
-          <motion.div
-            key={tab}
-            initial={{ opacity: 0, x: tab === 'roles' ? -20 : 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: tab === 'roles' ? 20 : -20 }}
-            transition={{ duration: 0.2 }}
-            className="flex flex-col gap-2"
-          >
-            {items.map((item, i) => (
-              <AcademyItem key={item.name} {...item} index={i} />
-            ))}
-          </motion.div>
+          {tab === 'roles' ? (
+            <motion.div key="roles"
+              initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 16 }} transition={{ duration: 0.18 }}
+              className="h-full"
+            >
+              <RolesTab />
+            </motion.div>
+          ) : (
+            <motion.div key="professions"
+              initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -16 }} transition={{ duration: 0.18 }}
+              className="flex flex-col gap-2 overflow-y-auto" style={{ maxHeight: 232, scrollbarWidth: 'none' }}
+            >
+              {ACADEMY_PROFESSIONS.map((item, i) => (
+                <AcademyItem key={item.name} {...item} index={i} />
+              ))}
+            </motion.div>
+          )}
         </AnimatePresence>
       </div>
 
@@ -238,7 +325,7 @@ function AcademyFace({ onFlipBack }) {
           Академия Платформенной Экономики
         </span>
         <span className="text-xs font-bold font-mono" style={{ color: '#a78bfa' }}>
-          {items.filter(i => !i.launching).length}/{items.length}
+          {STATUS_ROLES.length} статуси · {STATUS_ROLES.reduce((a, s) => a + s.roles.length, 0)} ролі
         </span>
       </div>
     </div>
