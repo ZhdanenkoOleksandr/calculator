@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import CoreBalanceCard from '../components/viking/CoreBalanceCard'
 import StatCard from '../components/viking/StatCard'
-import ChartSection from '../components/viking/ChartSection'
+import EconomyChartBlock from '../components/viking/EconomyChartBlock'
 import RoleDistribution from '../components/viking/RoleDistribution'
 import TokenGrid from '../components/viking/TokenGrid'
 import ActionFeed from '../components/viking/ActionFeed'
@@ -217,11 +217,9 @@ export default function VikingEconomy() {
         {/* ── bit.Trade IB-ПАКЕТЫ ── */}
         <BitTrade />
 
-        {/* CHART + ROLES */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <ChartSection data={TIMELINE} />
-          <RoleDistribution roles={ROLES} />
-        </div>
+        {/* CHART + ROLES — full width */}
+        <EconomyChartBlock timeline={TIMELINE} roles={ROLES} />
+        <RoleDistribution roles={ROLES} />
 
         {/* TOKEN GRID */}
         <TokenGrid tokens={TOKENS} />
