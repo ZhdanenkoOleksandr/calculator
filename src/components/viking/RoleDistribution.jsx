@@ -64,15 +64,14 @@ const STATUS_ROLES = [
 ]
 
 const ACADEMY_PROFESSIONS = [
-  { name: 'Предприниматель',   icon: 'ᚠ', color: 'gold',    progress: 70, launching: false },
-  { name: 'Разработчик',       icon: 'ᚲ', color: 'blue',    progress: 55, launching: false },
-  { name: 'Дизайнер',          icon: 'ᛊ', color: 'purple',  progress: 48, launching: false },
-  { name: 'Маркетолог',        icon: 'ᚹ', color: 'rose',    progress: 35, launching: false },
-  { name: 'Аналитик данных',   icon: 'ᛃ', color: 'cyan',    progress: 0,  launching: true  },
-  { name: 'Финансист',         icon: 'ᚢ', color: 'emerald', progress: 0,  launching: true  },
-  { name: 'Проект. менеджер',  icon: 'ᛟ', color: 'indigo',  progress: 0,  launching: true  },
-  { name: 'Консультант',       icon: 'ᚱ', color: 'teal',    progress: 0,  launching: true  },
-  { name: 'Коуч',              icon: 'ᛖ', color: 'orange',  progress: 0,  launching: true  },
+  'Архитектор цифровых экосистем',
+  'Консультант в области цифровых финансов',
+  'Эксперт по суверенной цифровой идентичности',
+  'Оператор цифровых экосистем',
+  'Эксперт по токенизации активов',
+  'Разработчик метаресурсов',
+  'Эксперт по цифровому праву и метаактивам',
+  'Промт-инженер в сфере искусственного интеллекта',
 ]
 
 const ROWS_PER_PAGE = 3
@@ -321,10 +320,23 @@ function AcademyFace({ onFlipBack }) {
             <motion.div key="professions"
               initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -16 }} transition={{ duration: 0.18 }}
-              className="flex flex-col gap-2 overflow-y-auto" style={{ maxHeight: 232, scrollbarWidth: 'none' }}
+              className="flex flex-wrap gap-2 overflow-y-auto content-start" style={{ maxHeight: 232, scrollbarWidth: 'none' }}
             >
-              {ACADEMY_PROFESSIONS.map((item, i) => (
-                <AcademyItem key={item.name} {...item} index={i} />
+              {ACADEMY_PROFESSIONS.map((name, i) => (
+                <motion.span
+                  key={name}
+                  initial={{ opacity: 0, scale: 0.92 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.2, delay: i * 0.04 }}
+                  className="text-[10px] font-semibold px-2.5 py-1.5 rounded-xl leading-tight"
+                  style={{
+                    background: 'rgba(167,139,250,0.08)',
+                    border: '1px solid rgba(167,139,250,0.2)',
+                    color: '#c4b5fd',
+                  }}
+                >
+                  {name}
+                </motion.span>
               ))}
             </motion.div>
           )}
@@ -340,7 +352,9 @@ function AcademyFace({ onFlipBack }) {
           Академия Платформенной Экономики
         </span>
         <span className="text-xs font-bold font-mono" style={{ color: '#a78bfa' }}>
-          {STATUS_ROLES.length} статуси · {STATUS_ROLES.reduce((a, s) => a + s.roles.length, 0)} ролі
+          {tab === 'roles'
+            ? `${STATUS_ROLES.length} статуси · ${STATUS_ROLES.reduce((a, s) => a + s.roles.length, 0)} ролі`
+            : `${ACADEMY_PROFESSIONS.length} профессий`}
         </span>
       </div>
     </div>
