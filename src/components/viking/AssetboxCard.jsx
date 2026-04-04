@@ -341,6 +341,25 @@ export default function AssetboxCard({ bitbonOpen, onespaceoOpen, onBitbonToggle
           boxShadow: '0 0 40px rgba(251,191,36,0.06), inset 0 0 40px rgba(251,191,36,0.02)',
         }}
       >
+        {/* Trefoil grid background pattern */}
+        <svg
+          className="absolute inset-0 w-full h-full pointer-events-none"
+          xmlns="http://www.w3.org/2000/svg"
+          style={{ opacity: 1 }}
+        >
+          <defs>
+            <pattern id="trefoil-owner" x="0" y="0" width="48" height="48" patternUnits="userSpaceOnUse">
+              {/* Three overlapping circles = trefoil clover shape */}
+              <circle cx="24" cy="14" r="11" fill="none" stroke="rgba(251,191,36,0.07)" strokeWidth="0.8"/>
+              <circle cx="14" cy="31" r="11" fill="none" stroke="rgba(251,191,36,0.07)" strokeWidth="0.8"/>
+              <circle cx="34" cy="31" r="11" fill="none" stroke="rgba(251,191,36,0.07)" strokeWidth="0.8"/>
+              {/* Center dot */}
+              <circle cx="24" cy="26" r="1.2" fill="rgba(251,191,36,0.1)"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#trefoil-owner)"/>
+        </svg>
+
         {/* Warm ambient glow */}
         <div
           className="absolute -top-10 -right-10 w-40 h-40 pointer-events-none rounded-full"

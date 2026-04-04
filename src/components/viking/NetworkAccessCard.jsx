@@ -181,7 +181,7 @@ const BLOCK_ICONS = { mission: '⚔', economy: 'ᚢ', contract: 'ᚱ' }
 const BLOCK_LABELS = { mission: 'Миссия', economy: 'Экономическая модель', contract: 'Смарт контракт' }
 const BLOCK_VALUES = (proj) => ({ mission: proj.mission, economy: proj.economy, contract: proj.contract })
 
-function DetailFace({ proj, blockKey, color, glow, catLabel, catIcon, onBack }) {
+function DetailFace({ proj, blockKey, color, glow, catLabel, catIcon, onBack, onSwitchBlock }) {
   if (!proj) return null
   const label  = BLOCK_LABELS[blockKey]
   const value  = BLOCK_VALUES(proj)[blockKey]
@@ -247,17 +247,31 @@ function DetailFace({ proj, blockKey, color, glow, catLabel, catIcon, onBack }) 
         <p className="text-[11px] text-zinc-400 leading-relaxed">{proj.desc}</p>
       </div>
 
-      {/* Other 2 blocks — compact */}
+      {/* Other 2 blocks — clickable to switch */}
       <div className="grid grid-cols-2 gap-2">
         {others.map(b => (
-          <div
+          <button
             key={b.key}
-            className="rounded-xl p-3 flex flex-col gap-1"
+            onClick={() => onSwitchBlock(b.key)}
+            className="rounded-xl p-3 flex flex-col gap-1 text-left transition-all duration-150 group"
             style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}
+            onMouseEnter={e => {
+              e.currentTarget.style.background = `${color}12`
+              e.currentTarget.style.border = `1px solid ${color}35`
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.background = 'rgba(255,255,255,0.03)'
+              e.currentTarget.style.border = '1px solid rgba(255,255,255,0.07)'
+            }}
           >
-            <p className="text-[8px] uppercase tracking-wider font-semibold text-zinc-500">{b.label}</p>
-            <p className="text-[10px] text-zinc-400 leading-snug">{BLOCK_VALUES(proj)[b.key]}</p>
-          </div>
+            <div className="flex items-center justify-between">
+              <p className="text-[8px] uppercase tracking-wider font-semibold text-zinc-500 group-hover:text-zinc-300 transition-colors">{b.label}</p>
+              <svg className="w-2.5 h-2.5 text-zinc-700 group-hover:text-zinc-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+              </svg>
+            </div>
+            <p className="text-[10px] text-zinc-500 group-hover:text-zinc-300 leading-snug transition-colors">{BLOCK_VALUES(proj)[b.key]}</p>
+          </button>
         ))}
       </div>
 
@@ -268,35 +282,69 @@ function DetailFace({ proj, blockKey, color, glow, catLabel, catIcon, onBack }) 
 }
 
 // ── Back face: meta explorer ──────────────────────────────────
-function BackFace({ onFlip, onDetailClick }) {
-  const [catIdx, setCatIdx] = useState(0)
-  const [projIdx, setProjIdx] = useState(0)
-  const scrollRef = useRef(null)
+const CARD_FULL = CARD_W + 8 // card width + gap
 
-  const cat = CATS[catIdx]
-  const proj = cat.projects[projIdx] ?? cat.projects[0]
+function BackFace({ onFlip, onDetailClick, catIdx, setCatIdx, projIdx, setProjIdx }) {
+  const scrollRef  = useRef(null)
+  const timerRef   = useRef(null)
+  const skipWrap   = useRef(false)
 
-  // Reset project index when category changes
+  const cat      = CATS[catIdx]
+  const N        = cat.projects.length
+  const tripled  = [...cat.projects, ...cat.projects, ...cat.projects]
+
+  // Scroll container so tripledIdx is centered
+  const scrollTo = (tripledIdx, smooth = true) => {
+    const el = scrollRef.current
+    if (!el) return
+    const offset = tripledIdx * CARD_FULL + CARD_W / 2 - el.clientWidth / 2
+    el.scrollTo({ left: Math.max(0, offset), behavior: smooth ? 'smooth' : 'instant' })
+  }
+
+  // On category change: reset proj + reposition instantly
   useEffect(() => {
-    setProjIdx(Math.floor(cat.projects.length / 2))
-    if (scrollRef.current) scrollRef.current.scrollLeft = 0
-  }, [catIdx])
+    const mid = Math.floor(N / 2)
+    setProjIdx(mid)
+    skipWrap.current = true
+    requestAnimationFrame(() => {
+      scrollTo(mid + N, false)
+      skipWrap.current = false
+    })
+  }, [catIdx]) // eslint-disable-line
 
-  const handleCatChange = (i) => {
-    setCatIdx(i)
+  // When projIdx changes externally (e.g. restore after detail): re-center
+  useEffect(() => {
+    scrollTo(projIdx + N, true)
+  }, [projIdx]) // eslint-disable-line
+
+  // After scroll settles, silently wrap if user drifted to clone section
+  const handleScroll = () => {
+    if (skipWrap.current) return
+    clearTimeout(timerRef.current)
+    timerRef.current = setTimeout(() => {
+      const el = scrollRef.current
+      if (!el) return
+      const sectionW = N * CARD_FULL
+      if (el.scrollLeft < sectionW * 0.4) {
+        skipWrap.current = true
+        el.scrollLeft += sectionW
+        setTimeout(() => { skipWrap.current = false }, 50)
+      } else if (el.scrollLeft > sectionW * 1.6) {
+        skipWrap.current = true
+        el.scrollLeft -= sectionW
+        setTimeout(() => { skipWrap.current = false }, 50)
+      }
+    }, 120)
   }
 
-  const handleProjClick = (i) => {
-    setProjIdx(i)
-    // Scroll that card into view
-    if (scrollRef.current) {
-      const offset = i * (CARD_W + 8) - (scrollRef.current.clientWidth / 2 - CARD_W / 2)
-      scrollRef.current.scrollTo({ left: Math.max(0, offset), behavior: 'smooth' })
-    }
+  const handleTripledClick = (i) => {
+    const realI = i % N
+    setProjIdx(realI)
+    scrollTo(realI + N, true)
   }
 
-  const handleBlockClick = (blockKey, clickedProj) => {
-    onDetailClick({ blockKey, proj: clickedProj, color: cat.color, glow: cat.glow, catLabel: cat.label, catIcon: cat.icon })
+  const handleBlockClick = (blockKey) => {
+    onDetailClick({ blockKey, proj: cat.projects[projIdx], color: cat.color, glow: cat.glow, catLabel: cat.label, catIcon: cat.icon })
   }
 
   return (
@@ -310,11 +358,7 @@ function BackFace({ onFlip, onDetailClick }) {
         <button
           onClick={onFlip}
           className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[10px] font-semibold transition-all duration-150"
-          style={{
-            background: 'rgba(96,165,250,0.1)',
-            border: '1px solid rgba(96,165,250,0.25)',
-            color: '#60a5fa',
-          }}
+          style={{ background: 'rgba(96,165,250,0.1)', border: '1px solid rgba(96,165,250,0.25)', color: '#60a5fa' }}
         >
           <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
@@ -323,22 +367,18 @@ function BackFace({ onFlip, onDetailClick }) {
         </button>
       </div>
 
-      {/* Category tabs — single horizontal row */}
+      {/* Category tabs */}
       <div className="flex gap-2 overflow-x-auto pb-0.5" style={{ scrollbarWidth: 'none' }}>
         {CATS.map((c, i) => (
           <button
             key={c.id}
-            onClick={() => handleCatChange(i)}
+            onClick={() => setCatIdx(i)}
             className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-200"
             style={catIdx === i ? {
-              background: `${c.color}20`,
-              border: `1px solid ${c.color}50`,
-              color: c.color,
-              boxShadow: `0 0 12px ${c.glow}`,
+              background: `${c.color}20`, border: `1px solid ${c.color}50`,
+              color: c.color, boxShadow: `0 0 12px ${c.glow}`,
             } : {
-              background: 'rgba(255,255,255,0.04)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              color: '#52525b',
+              background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#52525b',
             }}
           >
             <span className="text-base leading-none">{c.icon}</span>
@@ -347,45 +387,45 @@ function BackFace({ onFlip, onDetailClick }) {
         ))}
       </div>
 
-      {/* Color divider line matching active category */}
+      {/* Color divider */}
       <motion.div
         className="h-px rounded-full"
         animate={{ background: `linear-gradient(90deg, ${cat.color}60, ${cat.color}10, transparent)` }}
         transition={{ duration: 0.3 }}
       />
 
-      {/* Carousel of projects */}
+      {/* Infinite circular carousel */}
       <div
         ref={scrollRef}
         className="flex gap-2 overflow-x-auto pb-1"
-        style={{ scrollbarWidth: 'none', scrollSnapType: 'x mandatory' }}
+        style={{ scrollbarWidth: 'none' }}
+        onScroll={handleScroll}
       >
-        {cat.projects.map((p, i) => (
-          <div key={p.name} style={{ scrollSnapAlign: 'center' }}>
-            <ProjectCard
-              proj={p}
-              color={cat.color}
-              glow={cat.glow}
-              active={i === projIdx}
-              onClick={() => handleProjClick(i)}
-            />
-          </div>
+        {tripled.map((p, i) => (
+          <ProjectCard
+            key={`${i}`}
+            proj={p}
+            color={cat.color}
+            glow={cat.glow}
+            active={i % N === projIdx}
+            onClick={() => handleTripledClick(i)}
+          />
         ))}
       </div>
 
-      {/* Connection line from active card to detail blocks */}
+      {/* Connection line */}
       <div className="flex justify-center -my-1">
         <div className="w-px h-3" style={{ background: `linear-gradient(to bottom, ${cat.color}50, ${cat.color}20)` }} />
       </div>
 
-      {/* Detail blocks for active project */}
+      {/* Detail blocks */}
       <DetailBlocks proj={cat.projects[projIdx]} color={cat.color} onBlockClick={handleBlockClick} />
 
       {/* Footer count */}
       <div className="flex items-center gap-1.5 -mt-1">
         <div className="h-px flex-1" style={{ background: `${cat.color}18` }} />
         <span className="text-[9px] font-mono" style={{ color: cat.color + '80' }}>
-          {cat.projects.length} проектов в категории
+          {N} проектов в категории
         </span>
         <div className="h-px flex-1" style={{ background: `${cat.color}18` }} />
       </div>
@@ -526,23 +566,18 @@ function FrontFace({ onFlip }) {
 
 // ── Main component ────────────────────────────────────────────
 export default function NetworkAccessCard({ delay = 0 }) {
-  const [side, setSide] = useState('front')
+  const [side, setSide]           = useState('front')
   const [detailInfo, setDetailInfo] = useState(null)
+  // Lifted carousel state — preserved when returning from detail
+  const [catIdx, setCatIdx]       = useState(0)
+  const [projIdx, setProjIdx]     = useState(0)
   const controls = useAnimation()
 
   const flip = async (to) => {
-    await controls.start({
-      rotateY: 90,
-      scale: 0.96,
-      transition: { duration: 0.18, ease: 'easeIn' },
-    })
+    await controls.start({ rotateY: 90, scale: 0.96, transition: { duration: 0.18, ease: 'easeIn' } })
     setSide(to)
     controls.set({ rotateY: -90 })
-    await controls.start({
-      rotateY: 0,
-      scale: 1,
-      transition: { duration: 0.22, ease: 'easeOut' },
-    })
+    await controls.start({ rotateY: 0, scale: 1, transition: { duration: 0.22, ease: 'easeOut' } })
   }
 
   const handleDetailClick = async (info) => {
@@ -552,6 +587,11 @@ export default function NetworkAccessCard({ delay = 0 }) {
 
   const handleDetailBack = async () => {
     await flip('back')
+  }
+
+  // Switch block on detail face without going back (no flip, just update)
+  const handleSwitchBlock = (newBlockKey) => {
+    setDetailInfo(prev => prev ? { ...prev, blockKey: newBlockKey } : prev)
   }
 
   return (
@@ -568,7 +608,16 @@ export default function NetworkAccessCard({ delay = 0 }) {
     >
       <motion.div animate={controls}>
         {side === 'front' && <FrontFace onFlip={() => flip('back')} />}
-        {side === 'back'  && <BackFace onFlip={() => flip('front')} onDetailClick={handleDetailClick} />}
+        {side === 'back' && (
+          <BackFace
+            onFlip={() => flip('front')}
+            onDetailClick={handleDetailClick}
+            catIdx={catIdx}
+            setCatIdx={setCatIdx}
+            projIdx={projIdx}
+            setProjIdx={setProjIdx}
+          />
+        )}
         {side === 'detail' && detailInfo && (
           <DetailFace
             proj={detailInfo.proj}
@@ -578,6 +627,7 @@ export default function NetworkAccessCard({ delay = 0 }) {
             catLabel={detailInfo.catLabel}
             catIcon={detailInfo.catIcon}
             onBack={handleDetailBack}
+            onSwitchBlock={handleSwitchBlock}
           />
         )}
       </motion.div>
