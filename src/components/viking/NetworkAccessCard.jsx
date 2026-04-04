@@ -285,13 +285,14 @@ function DetailFace({ proj, blockKey, color, glow, catLabel, catIcon, onBack, on
 const CARD_FULL = CARD_W + 8 // card width + gap
 
 function BackFace({ onFlip, onDetailClick, catIdx, setCatIdx, projIdx, setProjIdx }) {
-  const scrollRef  = useRef(null)
-  const timerRef   = useRef(null)
-  const skipWrap   = useRef(false)
+  const scrollRef        = useRef(null)
+  const timerRef         = useRef(null)
+  const skipWrap         = useRef(false)
+  const catChangeRef     = useRef(false) // true only when catIdx actually changes
 
-  const cat      = CATS[catIdx]
-  const N        = cat.projects.length
-  const tripled  = [...cat.projects, ...cat.projects, ...cat.projects]
+  const cat     = CATS[catIdx]
+  const N       = cat.projects.length
+  const tripled = [...cat.projects, ...cat.projects, ...cat.projects]
 
   // Scroll container so tripledIdx is centered
   const scrollTo = (tripledIdx, smooth = true) => {
@@ -301,18 +302,29 @@ function BackFace({ onFlip, onDetailClick, catIdx, setCatIdx, projIdx, setProjId
     el.scrollTo({ left: Math.max(0, offset), behavior: smooth ? 'smooth' : 'instant' })
   }
 
-  // On category change: reset proj + reposition instantly
+  // On mount (including return from detail): just center the preserved projIdx
   useEffect(() => {
-    const mid = Math.floor(N / 2)
+    skipWrap.current = true
+    requestAnimationFrame(() => {
+      scrollTo(projIdx + N, false)
+      skipWrap.current = false
+    })
+  }, []) // eslint-disable-line
+
+  // On category change (skip first render): reset projIdx to middle
+  useEffect(() => {
+    if (!catChangeRef.current) { catChangeRef.current = true; return }
+    const newN  = CATS[catIdx].projects.length
+    const mid   = Math.floor(newN / 2)
     setProjIdx(mid)
     skipWrap.current = true
     requestAnimationFrame(() => {
-      scrollTo(mid + N, false)
+      scrollTo(mid + newN, false)
       skipWrap.current = false
     })
   }, [catIdx]) // eslint-disable-line
 
-  // When projIdx changes externally (e.g. restore after detail): re-center
+  // When projIdx changes: re-center
   useEffect(() => {
     scrollTo(projIdx + N, true)
   }, [projIdx]) // eslint-disable-line
