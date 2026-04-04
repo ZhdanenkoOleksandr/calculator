@@ -369,25 +369,25 @@ export default function DigitalIntuition({ aura, ping, link, delay = 0 }) {
       <div className="absolute -bottom-8 -left-8 w-24 h-24 rounded-full pointer-events-none"
         style={{ background: `radial-gradient(circle, rgba(34,211,238,0.1) 0%, transparent 70%)` }} />
 
-      {/* Eye of digital intuition — centered */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
-        <div
-          style={{
-            width: 240,
-            height: 240,
-            borderRadius: '50%',
-            overflow: 'hidden',
-            opacity: 0.18,
-            mixBlendMode: 'screen',
-            flexShrink: 0,
-          }}
-        >
-          <img
-            src="/digital-intuition-eye.png"
-            alt=""
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-          />
-        </div>
+      {/* Eye of digital intuition — centered, 25% above middle */}
+      <div
+        className="absolute pointer-events-none overflow-hidden"
+        style={{
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, calc(-50% - 25%))',
+          width: 240,
+          height: 240,
+          borderRadius: '50%',
+          opacity: 0.18,
+          mixBlendMode: 'screen',
+        }}
+      >
+        <img
+          src="/digital-intuition-eye.png"
+          alt=""
+          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+        />
       </div>
 
       {/* Header */}
