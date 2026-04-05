@@ -252,8 +252,8 @@ function AcademyItem({ name, icon, color, progress, launching, index }) {
 }
 
 // ── Back face content ─────────────────────────────────────────
-function AcademyFace({ onFlipBack }) {
-  const [tab, setTab] = useState('roles')
+export function AcademyFace({ onFlipBack, defaultTab = 'roles' }) {
+  const [tab, setTab] = useState(defaultTab)
 
   return (
     <div className="flex flex-col gap-3 h-full">
