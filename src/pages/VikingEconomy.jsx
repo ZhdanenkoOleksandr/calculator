@@ -3,7 +3,6 @@ import { motion } from 'framer-motion'
 import CoreBalanceCard from '../components/viking/CoreBalanceCard'
 import StatCard from '../components/viking/StatCard'
 import EconomyChartBlock from '../components/viking/EconomyChartBlock'
-import RoleDistribution from '../components/viking/RoleDistribution'
 import TokenGrid from '../components/viking/TokenGrid'
 import ActionFeed from '../components/viking/ActionFeed'
 import NextRoleCard from '../components/viking/NextRoleCard'
@@ -30,15 +29,10 @@ const TIMELINE = [
 ]
 
 const ROLES = [
-  { name: 'Провайдер',  pct: 42, income: '$104,097', color: 'blue',    icon: 'ᚹ' },
-  { name: 'Создатель',  pct: 35, income: '$86,748',  color: 'purple',  icon: 'ᚷ' },
-  { name: 'Инвестор',   pct: 23, income: '$57,005',  color: 'gold',    icon: 'ᚠ' },
-  { name: 'Ментор',     pct: 18, income: '$44,613',  color: 'emerald', icon: 'ᚱ' },
-  { name: 'Аналитик',   pct: 14, income: '$34,699',  color: 'cyan',    icon: 'ᛃ' },
-  { name: 'Амбассадор', pct: 11, income: '$27,264',  color: 'rose',    icon: 'ᛖ' },
-  { name: 'Архитектор', pct: 29, income: '$71,877',  color: 'indigo',  icon: 'ᛟ' },
-  { name: 'Куратор',    pct: 16, income: '$39,656',  color: 'orange',  icon: 'ᛇ' },
-  { name: 'Модератор',  pct: 9,  income: '$22,307',  color: 'teal',    icon: 'ᛏ' },
+  { name: 'Провайдер',                    income: 104097, color: 'blue',    icon: 'ᚹ' },
+  { name: 'Инвестор',                     income: 57005,  color: 'gold',    icon: 'ᚠ' },
+  { name: 'Партнер 6-го уровня bit.Trade', income: 73420,  color: 'purple',  icon: 'ᛒ' },
+  { name: 'Холдер bit.Trade',              income: 13428,  color: 'orange',  icon: 'ᛖ' },
 ]
 
 const TOKENS = [
@@ -217,9 +211,8 @@ export default function VikingEconomy() {
         {/* ── bit.Trade IB-ПАКЕТЫ ── */}
         <BitTrade />
 
-        {/* CHART + ROLES — full width */}
+        {/* CHART + ROLES — full width unified block */}
         <EconomyChartBlock timeline={TIMELINE} roles={ROLES} />
-        <RoleDistribution roles={ROLES} />
 
         {/* TOKEN GRID */}
         <TokenGrid tokens={TOKENS} />
