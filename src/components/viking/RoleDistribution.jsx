@@ -156,9 +156,9 @@ function RolesTab() {
   const t = ROLE_THEME[current.color] ?? ROLE_THEME.blue
 
   return (
-    <div className="flex gap-2.5 h-full" style={{ minHeight: 0 }}>
+    <div className="flex gap-3 h-full" style={{ minHeight: 0 }}>
       {/* Left: status buttons */}
-      <div className="flex flex-col gap-1.5 flex-shrink-0" style={{ width: 96 }}>
+      <div className="flex flex-col gap-2 flex-shrink-0 overflow-y-auto" style={{ width: 160, scrollbarWidth: 'none' }}>
         {STATUS_ROLES.map((s, i) => {
           const st = ROLE_THEME[s.color] ?? ROLE_THEME.blue
           const active = i === statusIdx
@@ -166,7 +166,7 @@ function RolesTab() {
             <button
               key={s.status}
               onClick={() => setStatusIdx(i)}
-              className="flex items-center gap-1.5 rounded-xl px-2.5 py-2 text-left transition-all duration-200 w-full"
+              className="flex items-center gap-2 rounded-xl px-3 py-3 text-left transition-all duration-200 w-full"
               style={active ? {
                 background: `${st.label}18`,
                 border: `1px solid ${st.label}45`,
@@ -176,10 +176,10 @@ function RolesTab() {
                 border: '1px solid rgba(255,255,255,0.07)',
               }}
             >
-              <span className="text-sm leading-none flex-shrink-0" style={{ color: active ? st.label : '#52525b' }}>
+              <span className="text-3xl leading-none flex-shrink-0" style={{ color: active ? st.label : '#52525b' }}>
                 {s.icon}
               </span>
-              <span className="text-[10px] font-semibold leading-tight" style={{ color: active ? st.label : '#52525b' }}>
+              <span className="text-[30px] font-semibold leading-tight" style={{ color: active ? st.label : '#52525b' }}>
                 {s.status}
               </span>
             </button>
@@ -191,9 +191,9 @@ function RolesTab() {
       <div className="w-px self-stretch rounded-full" style={{ background: `${t.label}20` }} />
 
       {/* Right: roles for selected status */}
-      <div className="flex-1 min-w-0 flex flex-col gap-2 overflow-y-auto" style={{ scrollbarWidth: 'none' }}>
+      <div className="flex-1 min-w-0 flex flex-col gap-3 overflow-y-auto" style={{ scrollbarWidth: 'none' }}>
         {/* Status label */}
-        <p className="text-[9px] uppercase tracking-wider font-semibold leading-tight" style={{ color: t.label + 'aa' }}>
+        <p className="text-[27px] uppercase tracking-wider font-semibold leading-tight" style={{ color: t.label + 'aa' }}>
           Статус «{current.status}» · ролі
         </p>
 
@@ -204,19 +204,19 @@ function RolesTab() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -10 }}
             transition={{ duration: 0.18 }}
-            className="flex flex-col gap-2"
+            className="flex flex-col gap-3"
           >
             {current.roles.map((role) => (
-              <div key={role.name} className="flex flex-col gap-1">
+              <div key={role.name} className="flex flex-col gap-1.5">
                 {/* Role name badge */}
                 <span
-                  className="text-[10px] font-bold px-2 py-0.5 rounded self-start"
+                  className="text-[30px] font-bold px-3 py-1 rounded self-start"
                   style={{ background: `${t.label}18`, border: `1px solid ${t.label}35`, color: t.label }}
                 >
                   {role.name}
                 </span>
                 {/* Description */}
-                <p className="text-[9.5px] text-zinc-500 leading-relaxed">
+                <p className="text-[28px] text-zinc-500 leading-relaxed">
                   {role.desc}
                 </p>
               </div>
@@ -234,16 +234,16 @@ function ProfessionsTab() {
   const current = ACADEMY_PROFESSIONS[idx]
 
   return (
-    <div className="flex gap-2.5 h-full" style={{ minHeight: 0 }}>
+    <div className="flex gap-3 h-full" style={{ minHeight: 0 }}>
       {/* Left: profession buttons */}
-      <div className="flex flex-col gap-1.5 flex-shrink-0 overflow-y-auto" style={{ width: 100, scrollbarWidth: 'none' }}>
+      <div className="flex flex-col gap-2 flex-shrink-0 overflow-y-auto" style={{ width: 160, scrollbarWidth: 'none' }}>
         {ACADEMY_PROFESSIONS.map((p, i) => {
           const active = i === idx
           return (
             <button
               key={p.name}
               onClick={() => setIdx(i)}
-              className="flex items-center gap-1.5 rounded-xl px-2.5 py-2 text-left transition-all duration-200 w-full"
+              className="flex items-center gap-2 rounded-xl px-3 py-3 text-left transition-all duration-200 w-full"
               style={active ? {
                 background: 'rgba(167,139,250,0.12)',
                 border: '1px solid rgba(167,139,250,0.35)',
@@ -253,10 +253,10 @@ function ProfessionsTab() {
                 border: '1px solid rgba(255,255,255,0.07)',
               }}
             >
-              <span className="text-sm leading-none flex-shrink-0" style={{ color: active ? '#a78bfa' : '#52525b' }}>
+              <span className="text-3xl leading-none flex-shrink-0" style={{ color: active ? '#a78bfa' : '#52525b' }}>
                 {p.icon}
               </span>
-              <span className="text-[9.5px] font-semibold leading-tight line-clamp-2" style={{ color: active ? '#a78bfa' : '#52525b' }}>
+              <span className="text-[28px] font-semibold leading-tight" style={{ color: active ? '#a78bfa' : '#52525b' }}>
                 {p.name}
               </span>
             </button>
@@ -268,8 +268,8 @@ function ProfessionsTab() {
       <div className="w-px self-stretch rounded-full" style={{ background: 'rgba(167,139,250,0.15)' }} />
 
       {/* Right: description for selected profession */}
-      <div className="flex-1 min-w-0 flex flex-col gap-2 overflow-y-auto" style={{ scrollbarWidth: 'none' }}>
-        <p className="text-[9px] uppercase tracking-wider font-semibold leading-tight" style={{ color: 'rgba(167,139,250,0.7)' }}>
+      <div className="flex-1 min-w-0 flex flex-col gap-3 overflow-y-auto" style={{ scrollbarWidth: 'none' }}>
+        <p className="text-[27px] uppercase tracking-wider font-semibold leading-tight" style={{ color: 'rgba(167,139,250,0.7)' }}>
           Профессия Web4
         </p>
         <AnimatePresence mode="wait">
@@ -279,15 +279,15 @@ function ProfessionsTab() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -10 }}
             transition={{ duration: 0.18 }}
-            className="flex flex-col gap-2"
+            className="flex flex-col gap-3"
           >
             <span
-              className="text-[10px] font-bold px-2 py-0.5 rounded self-start"
+              className="text-[30px] font-bold px-3 py-1.5 rounded self-start"
               style={{ background: 'rgba(167,139,250,0.12)', border: '1px solid rgba(167,139,250,0.3)', color: '#c4b5fd' }}
             >
               {current.name}
             </span>
-            <p className="text-[9.5px] text-zinc-500 leading-relaxed">
+            <p className="text-[28px] text-zinc-500 leading-relaxed">
               {current.desc}
             </p>
           </motion.div>
