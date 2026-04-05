@@ -156,9 +156,9 @@ function RolesTab() {
   const t = ROLE_THEME[current.color] ?? ROLE_THEME.blue
 
   return (
-    <div className="flex gap-3 h-full" style={{ minHeight: 0 }}>
+    <div className="flex gap-3" style={{ minHeight: 280 }}>
       {/* Left: status buttons */}
-      <div className="flex flex-col gap-2 flex-shrink-0 overflow-y-auto" style={{ width: 160, scrollbarWidth: 'none' }}>
+      <div className="flex flex-col gap-1.5 flex-shrink-0 overflow-y-auto" style={{ width: 115, scrollbarWidth: 'none' }}>
         {STATUS_ROLES.map((s, i) => {
           const st = ROLE_THEME[s.color] ?? ROLE_THEME.blue
           const active = i === statusIdx
@@ -166,7 +166,7 @@ function RolesTab() {
             <button
               key={s.status}
               onClick={() => setStatusIdx(i)}
-              className="flex items-center gap-2 rounded-xl px-3 py-3 text-left transition-all duration-200 w-full"
+              className="flex items-center gap-2 rounded-xl px-2.5 py-2 text-left transition-all duration-200 w-full"
               style={active ? {
                 background: `${st.label}18`,
                 border: `1px solid ${st.label}45`,
@@ -176,10 +176,10 @@ function RolesTab() {
                 border: '1px solid rgba(255,255,255,0.07)',
               }}
             >
-              <span className="text-3xl leading-none flex-shrink-0" style={{ color: active ? st.label : '#52525b' }}>
+              <span className="text-[21px] leading-none flex-shrink-0" style={{ color: active ? st.label : '#52525b' }}>
                 {s.icon}
               </span>
-              <span className="text-[30px] font-semibold leading-tight" style={{ color: active ? st.label : '#52525b' }}>
+              <span className="text-[21px] font-semibold leading-tight" style={{ color: active ? st.label : '#52525b' }}>
                 {s.status}
               </span>
             </button>
@@ -191,9 +191,9 @@ function RolesTab() {
       <div className="w-px self-stretch rounded-full" style={{ background: `${t.label}20` }} />
 
       {/* Right: roles for selected status */}
-      <div className="flex-1 min-w-0 flex flex-col gap-3 overflow-y-auto" style={{ scrollbarWidth: 'none' }}>
+      <div className="flex-1 min-w-0 flex flex-col gap-2 overflow-y-auto" style={{ scrollbarWidth: 'none' }}>
         {/* Status label */}
-        <p className="text-[27px] uppercase tracking-wider font-semibold leading-tight" style={{ color: t.label + 'aa' }}>
+        <p className="text-[19px] uppercase tracking-wider font-semibold leading-tight" style={{ color: t.label + 'aa' }}>
           Статус «{current.status}» · ролі
         </p>
 
@@ -204,19 +204,19 @@ function RolesTab() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -10 }}
             transition={{ duration: 0.18 }}
-            className="flex flex-col gap-3"
+            className="flex flex-col gap-2.5"
           >
             {current.roles.map((role) => (
-              <div key={role.name} className="flex flex-col gap-1.5">
+              <div key={role.name} className="flex flex-col gap-1">
                 {/* Role name badge */}
                 <span
-                  className="text-[30px] font-bold px-3 py-1 rounded self-start"
+                  className="text-[21px] font-bold px-2.5 py-1 rounded self-start"
                   style={{ background: `${t.label}18`, border: `1px solid ${t.label}35`, color: t.label }}
                 >
                   {role.name}
                 </span>
                 {/* Description */}
-                <p className="text-[28px] text-zinc-500 leading-relaxed">
+                <p className="text-[20px] text-zinc-500 leading-relaxed">
                   {role.desc}
                 </p>
               </div>
@@ -234,16 +234,16 @@ function ProfessionsTab() {
   const current = ACADEMY_PROFESSIONS[idx]
 
   return (
-    <div className="flex gap-3 h-full" style={{ minHeight: 0 }}>
+    <div className="flex gap-3" style={{ minHeight: 280 }}>
       {/* Left: profession buttons */}
-      <div className="flex flex-col gap-2 flex-shrink-0 overflow-y-auto" style={{ width: 160, scrollbarWidth: 'none' }}>
+      <div className="flex flex-col gap-1.5 flex-shrink-0 overflow-y-auto" style={{ width: 115, scrollbarWidth: 'none' }}>
         {ACADEMY_PROFESSIONS.map((p, i) => {
           const active = i === idx
           return (
             <button
               key={p.name}
               onClick={() => setIdx(i)}
-              className="flex items-center gap-2 rounded-xl px-3 py-3 text-left transition-all duration-200 w-full"
+              className="flex items-center gap-2 rounded-xl px-2.5 py-2 text-left transition-all duration-200 w-full"
               style={active ? {
                 background: 'rgba(167,139,250,0.12)',
                 border: '1px solid rgba(167,139,250,0.35)',
@@ -253,10 +253,10 @@ function ProfessionsTab() {
                 border: '1px solid rgba(255,255,255,0.07)',
               }}
             >
-              <span className="text-3xl leading-none flex-shrink-0" style={{ color: active ? '#a78bfa' : '#52525b' }}>
+              <span className="text-[21px] leading-none flex-shrink-0" style={{ color: active ? '#a78bfa' : '#52525b' }}>
                 {p.icon}
               </span>
-              <span className="text-[28px] font-semibold leading-tight" style={{ color: active ? '#a78bfa' : '#52525b' }}>
+              <span className="text-[20px] font-semibold leading-tight" style={{ color: active ? '#a78bfa' : '#52525b' }}>
                 {p.name}
               </span>
             </button>
@@ -268,8 +268,8 @@ function ProfessionsTab() {
       <div className="w-px self-stretch rounded-full" style={{ background: 'rgba(167,139,250,0.15)' }} />
 
       {/* Right: description for selected profession */}
-      <div className="flex-1 min-w-0 flex flex-col gap-3 overflow-y-auto" style={{ scrollbarWidth: 'none' }}>
-        <p className="text-[27px] uppercase tracking-wider font-semibold leading-tight" style={{ color: 'rgba(167,139,250,0.7)' }}>
+      <div className="flex-1 min-w-0 flex flex-col gap-2 overflow-y-auto" style={{ scrollbarWidth: 'none' }}>
+        <p className="text-[19px] uppercase tracking-wider font-semibold leading-tight" style={{ color: 'rgba(167,139,250,0.7)' }}>
           Профессия Web4
         </p>
         <AnimatePresence mode="wait">
@@ -279,15 +279,15 @@ function ProfessionsTab() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -10 }}
             transition={{ duration: 0.18 }}
-            className="flex flex-col gap-3"
+            className="flex flex-col gap-2"
           >
             <span
-              className="text-[30px] font-bold px-3 py-1.5 rounded self-start"
+              className="text-[21px] font-bold px-2.5 py-1 rounded self-start"
               style={{ background: 'rgba(167,139,250,0.12)', border: '1px solid rgba(167,139,250,0.3)', color: '#c4b5fd' }}
             >
               {current.name}
             </span>
-            <p className="text-[28px] text-zinc-500 leading-relaxed">
+            <p className="text-[20px] text-zinc-500 leading-relaxed">
               {current.desc}
             </p>
           </motion.div>
@@ -352,12 +352,20 @@ function AcademyItem({ name, icon, color, progress, launching, index }) {
   )
 }
 
+const CERT_POINTS = [
+  { icon: '🎓', bold: 'Подтверждение Вашего статуса и компетенций', text: ' — сертификат удостоверяет Ваши знания и профессиональные навыки, полученные в Академии.' },
+  { icon: '🔑', bold: 'Доступ к сервисам и инструментам', text: ' — дает Вам право работать с ключевыми цифровыми сервисами.' },
+  { icon: '🌐', bold: 'Участие в развитии цифровой экосистемы', text: ' — Вы являетесь частью глобального Сообщества, которое создает цифровое будущее.' },
+  { icon: '🤝', bold: 'Прозрачность и доверие', text: ' — сертификат подтверждает Ваши роль и статус, укрепляя доверие при взаимодействии с другими Пользователями.' },
+  { icon: '⭐', bold: 'Рост репутации', text: ' — сертификаты влияют на расчет Вашей репутации в Сообществе Системы Bitbon посредством сервиса АУРА (Агрегированный Уровень Репутации Аккаунта).' },
+]
+
 // ── Back face content ─────────────────────────────────────────
 export function AcademyFace({ onFlipBack, defaultTab = 'roles' }) {
   const [tab, setTab] = useState(defaultTab)
 
   return (
-    <div className="flex flex-col gap-3 h-full">
+    <div className="flex flex-col gap-4">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -370,18 +378,54 @@ export function AcademyFace({ onFlipBack, defaultTab = 'roles' }) {
           >
             Академия
           </p>
-          <p className="text-white font-bold text-lg mt-0.5">Платформенная Экономика</p>
+          <p className="text-white font-bold text-xl mt-0.5">Платформенная Экономика</p>
         </div>
-        <button
-          onClick={onFlipBack}
-          className="hidden sm:flex w-7 h-7 rounded-lg items-center justify-center transition-all duration-150"
-          style={{ background: 'rgba(167,139,250,0.1)', border: '1px solid rgba(167,139,250,0.25)' }}
-          title="Вернуться к ролям"
-        >
-          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="#a78bfa" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
-          </svg>
-        </button>
+        {onFlipBack && (
+          <button
+            onClick={onFlipBack}
+            className="flex w-8 h-8 rounded-lg items-center justify-center transition-all duration-150"
+            style={{ background: 'rgba(167,139,250,0.1)', border: '1px solid rgba(167,139,250,0.25)' }}
+            title="Закрыть"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="#a78bfa" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        )}
+      </div>
+
+      {/* ── Platform Economy info (shared) ── */}
+      <div
+        className="rounded-2xl p-4"
+        style={{
+          background: 'linear-gradient(135deg, rgba(139,92,246,0.08), rgba(34,211,238,0.05))',
+          border: '1px solid rgba(139,92,246,0.2)',
+        }}
+      >
+        <div className="flex items-start gap-3">
+          <div
+            className="w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center text-xl"
+            style={{ background: 'linear-gradient(135deg, rgba(139,92,246,0.3), rgba(34,211,238,0.2))', border: '1px solid rgba(139,92,246,0.3)' }}
+          >
+            ⚔
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <p className="text-sm font-bold text-white leading-snug">
+              Что такое Платформенная Экономика?
+            </p>
+            <p className="text-[13px] text-zinc-400 leading-relaxed">
+              Академия Платформенной Экономики — образовательная программа Системы Bitbon. Вы получаете знания, статус и инструменты для участия в децентрализованной цифровой экосистеме Web4.
+            </p>
+            <div className="flex flex-wrap gap-1.5 mt-1">
+              {['Web4', 'Bitbon System', 'DeFi', 'Metaresources', 'Smart Contracts'].map(tag => (
+                <span key={tag} className="text-[11px] font-semibold px-2 py-0.5 rounded-full"
+                  style={{ background: 'rgba(139,92,246,0.12)', border: '1px solid rgba(139,92,246,0.25)', color: '#a78bfa' }}>
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Tab switcher */}
@@ -393,7 +437,7 @@ export function AcademyFace({ onFlipBack, defaultTab = 'roles' }) {
           <button
             key={key}
             onClick={() => setTab(key)}
-            className="flex-1 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200"
+            className="flex-1 py-2 rounded-lg text-sm sm:text-base font-semibold transition-all duration-200"
             style={tab === key ? {
               background: 'linear-gradient(135deg, rgba(167,139,250,0.2), rgba(96,165,250,0.15))',
               border: '1px solid rgba(167,139,250,0.3)',
@@ -406,32 +450,134 @@ export function AcademyFace({ onFlipBack, defaultTab = 'roles' }) {
         ))}
       </div>
 
-      {/* Content area */}
-      <div className="flex-1 overflow-hidden" style={{ minHeight: 0 }}>
-        <AnimatePresence mode="wait">
-          {tab === 'roles' ? (
-            <motion.div key="roles"
-              initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 16 }} transition={{ duration: 0.18 }}
-              className="h-full"
-            >
-              <RolesTab />
-            </motion.div>
-          ) : (
-            <motion.div key="professions"
-              initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -16 }} transition={{ duration: 0.18 }}
-              className="h-full"
-            >
-              <ProfessionsTab />
-            </motion.div>
-          )}
-        </AnimatePresence>
+      {/* Tab content */}
+      <AnimatePresence mode="wait">
+        {tab === 'roles' ? (
+          <motion.div key="roles"
+            initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 16 }} transition={{ duration: 0.18 }}
+          >
+            <RolesTab />
+          </motion.div>
+        ) : (
+          <motion.div key="professions"
+            initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -16 }} transition={{ duration: 0.18 }}
+          >
+            <ProfessionsTab />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Certificate section (shared) ── */}
+      <div className="flex flex-col gap-3">
+        {/* Divider */}
+        <div className="flex items-center gap-2">
+          <div className="h-px flex-1" style={{ background: 'linear-gradient(90deg, transparent, rgba(167,139,250,0.3))' }} />
+          <span className="text-[10px] uppercase tracking-[0.2em] font-semibold px-3 py-1 rounded-full"
+            style={{ color: '#a78bfa', background: 'rgba(167,139,250,0.07)', border: '1px solid rgba(167,139,250,0.2)' }}>
+            Сертификат
+          </span>
+          <div className="h-px flex-1" style={{ background: 'linear-gradient(90deg, rgba(167,139,250,0.3), transparent)' }} />
+        </div>
+
+        {/* Certificate card */}
+        <div
+          className="rounded-2xl overflow-hidden"
+          style={{ border: '1px solid rgba(96,165,250,0.25)' }}
+        >
+          {/* Visual certificate banner */}
+          <div
+            className="relative flex items-center justify-center py-8 overflow-hidden"
+            style={{
+              background: 'linear-gradient(135deg, #0c1e3e 0%, #0a2a5e 40%, #0d3580 60%, #1a4ba0 100%)',
+              minHeight: 140,
+            }}
+          >
+            {/* Grid lines */}
+            <svg className="absolute inset-0 w-full h-full opacity-10" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <pattern id="cert-grid" width="30" height="30" patternUnits="userSpaceOnUse">
+                  <path d="M 30 0 L 0 0 0 30" fill="none" stroke="#60a5fa" strokeWidth="0.5"/>
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#cert-grid)" />
+            </svg>
+            {/* Glow circles */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-48 h-48 rounded-full opacity-20" style={{ background: 'radial-gradient(circle, #60a5fa, transparent)' }} />
+            </div>
+            {/* Certificate visual element */}
+            <div className="relative flex flex-col items-center gap-3 z-10">
+              {/* Main seal */}
+              <div
+                className="w-20 h-20 rounded-full flex items-center justify-center"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(96,165,250,0.3), rgba(147,197,253,0.2))',
+                  border: '2px solid rgba(147,197,253,0.6)',
+                  boxShadow: '0 0 30px rgba(96,165,250,0.5), inset 0 0 20px rgba(96,165,250,0.1)',
+                  backdropFilter: 'blur(8px)',
+                }}
+              >
+                <span className="text-4xl">🏛</span>
+              </div>
+              {/* Certificate text */}
+              <div className="text-center">
+                <p className="text-[11px] uppercase tracking-[0.3em] font-semibold" style={{ color: 'rgba(147,197,253,0.7)' }}>
+                  Bitbon System Academy
+                </p>
+                <p className="text-lg font-bold mt-0.5" style={{ color: '#bfdbfe', letterSpacing: '0.05em' }}>
+                  CERTIFICATE
+                </p>
+              </div>
+              {/* Shield badges */}
+              <div className="flex gap-3">
+                {['🛡', '🪙', '🛡'].map((ic, i) => (
+                  <div key={i}
+                    className="w-8 h-8 rounded-lg flex items-center justify-center text-base"
+                    style={{
+                      background: 'rgba(96,165,250,0.15)',
+                      border: '1px solid rgba(96,165,250,0.35)',
+                      boxShadow: '0 0 8px rgba(96,165,250,0.3)',
+                    }}
+                  >
+                    {ic}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Certificate text content */}
+          <div className="p-4 flex flex-col gap-3" style={{ background: 'rgba(8,8,20,0.9)' }}>
+            <div>
+              <h3 className="text-base font-bold text-white leading-snug">
+                Признание и подтверждение Ваших знаний
+              </h3>
+              <p className="text-[13px] text-zinc-400 leading-relaxed mt-2">
+                По результатам прохождения образовательных программ Академии Вы получаете мультифункциональный сертификат, который открывает доступ к широкому спектру функциональных возможностей экосистемы цифровых сервисов «Система <span className="font-bold text-zinc-300">Bitbon</span>».
+              </p>
+              <p className="text-[13px] text-zinc-500 mt-2">
+                Почему этот сертификат важен?
+              </p>
+            </div>
+            <div className="flex flex-col gap-2">
+              {CERT_POINTS.map((pt, i) => (
+                <div key={i} className="flex gap-2 items-start">
+                  <span className="text-sm flex-shrink-0 mt-0.5">{pt.icon}</span>
+                  <p className="text-[13px] text-zinc-400 leading-relaxed">
+                    <span className="font-bold text-zinc-200">{pt.bold}</span>{pt.text}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Footer */}
       <div
-        className="rounded-xl px-3 py-2 flex items-center justify-between mt-auto"
+        className="rounded-xl px-3 py-2 flex items-center justify-between"
         style={{ background: 'rgba(167,139,250,0.05)', border: '1px solid rgba(167,139,250,0.12)' }}
       >
         <span className="text-[9px] text-zinc-600 uppercase tracking-widest">
