@@ -64,14 +64,46 @@ const STATUS_ROLES = [
 ]
 
 const ACADEMY_PROFESSIONS = [
-  'Архитектор цифровых экосистем',
-  'Консультант в области цифровых финансов',
-  'Эксперт по суверенной цифровой идентичности',
-  'Оператор цифровых экосистем',
-  'Эксперт по токенизации активов',
-  'Разработчик метаресурсов',
-  'Эксперт по цифровому праву и метаактивам',
-  'Промт-инженер в сфере искусственного интеллекта',
+  {
+    name: 'Архитектор цифровых экосистем',
+    icon: 'ᛟ',
+    desc: 'Создает и управляет цифровыми платформами, объединяющими различные сервисы, технологии и пользователей.',
+  },
+  {
+    name: 'Консультант в области цифровых финансов',
+    icon: 'ᚠ',
+    desc: 'Помогает компаниям и частным лицам адаптироваться к новым финансовым инструментам.',
+  },
+  {
+    name: 'Эксперт по суверенной цифровой идентичности',
+    icon: 'ᚢ',
+    desc: 'Разрабатывает и внедряет технологии, позволяющие людям контролировать свою цифровую безопасность.',
+  },
+  {
+    name: 'Оператор цифровых экосистем',
+    icon: 'ᚦ',
+    desc: 'Обеспечивает бесперебойную работу платформ, интегрируя новые технологии и отслеживая их эффективность.',
+  },
+  {
+    name: 'Эксперт по токенизации активов',
+    icon: 'ᚹ',
+    desc: 'Консультирует по переводу реальных активов (недвижимости, товаров, интеллектуальной собственности) в цифровую форму с использованием технологии блокчейн.',
+  },
+  {
+    name: 'Разработчик метаресурсов',
+    icon: 'ᚷ',
+    desc: 'Создает уникальные метаактивы и инфраструктурные компоненты для Системы Bitbon.',
+  },
+  {
+    name: 'Эксперт по цифровому праву и метаактивам',
+    icon: 'ᛖ',
+    desc: 'Специализируется на правовом регулировании общественных отношений пользователей в децентрализованных информационных платформах.',
+  },
+  {
+    name: 'Промт-инженер в сфере искусственного интеллекта',
+    icon: 'ᛊ',
+    desc: 'Разрабатывает стратегии взаимодействия с искусственным интеллектом, создавая и оптимизируя текстовые, голосовые и визуальные запросы. Настраивает модели для решений специализированных бизнес-задач, создает персонализированные интерфейсы.',
+  },
 ]
 
 const ROWS_PER_PAGE = 3
@@ -196,7 +228,76 @@ function RolesTab() {
   )
 }
 
-// ── Professions tab item ───────────────────────────────────────
+// ── Professions tab: selector + description ───────────────────
+function ProfessionsTab() {
+  const [idx, setIdx] = useState(0)
+  const current = ACADEMY_PROFESSIONS[idx]
+
+  return (
+    <div className="flex gap-2.5 h-full" style={{ minHeight: 0 }}>
+      {/* Left: profession buttons */}
+      <div className="flex flex-col gap-1.5 flex-shrink-0 overflow-y-auto" style={{ width: 100, scrollbarWidth: 'none' }}>
+        {ACADEMY_PROFESSIONS.map((p, i) => {
+          const active = i === idx
+          return (
+            <button
+              key={p.name}
+              onClick={() => setIdx(i)}
+              className="flex items-center gap-1.5 rounded-xl px-2.5 py-2 text-left transition-all duration-200 w-full"
+              style={active ? {
+                background: 'rgba(167,139,250,0.12)',
+                border: '1px solid rgba(167,139,250,0.35)',
+                boxShadow: '0 0 8px rgba(167,139,250,0.15)',
+              } : {
+                background: 'rgba(255,255,255,0.03)',
+                border: '1px solid rgba(255,255,255,0.07)',
+              }}
+            >
+              <span className="text-sm leading-none flex-shrink-0" style={{ color: active ? '#a78bfa' : '#52525b' }}>
+                {p.icon}
+              </span>
+              <span className="text-[9.5px] font-semibold leading-tight line-clamp-2" style={{ color: active ? '#a78bfa' : '#52525b' }}>
+                {p.name}
+              </span>
+            </button>
+          )
+        })}
+      </div>
+
+      {/* Vertical divider */}
+      <div className="w-px self-stretch rounded-full" style={{ background: 'rgba(167,139,250,0.15)' }} />
+
+      {/* Right: description for selected profession */}
+      <div className="flex-1 min-w-0 flex flex-col gap-2 overflow-y-auto" style={{ scrollbarWidth: 'none' }}>
+        <p className="text-[9px] uppercase tracking-wider font-semibold leading-tight" style={{ color: 'rgba(167,139,250,0.7)' }}>
+          Профессия Web4
+        </p>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={current.name}
+            initial={{ opacity: 0, x: 10 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -10 }}
+            transition={{ duration: 0.18 }}
+            className="flex flex-col gap-2"
+          >
+            <span
+              className="text-[10px] font-bold px-2 py-0.5 rounded self-start"
+              style={{ background: 'rgba(167,139,250,0.12)', border: '1px solid rgba(167,139,250,0.3)', color: '#c4b5fd' }}
+            >
+              {current.name}
+            </span>
+            <p className="text-[9.5px] text-zinc-500 leading-relaxed">
+              {current.desc}
+            </p>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </div>
+  )
+}
+
+// ── Professions tab item (legacy, unused) ──────────────────────
 function AcademyItem({ name, icon, color, progress, launching, index }) {
   const t = ROLE_THEME[color] ?? ROLE_THEME.blue
   return (
@@ -292,7 +393,7 @@ export function AcademyFace({ onFlipBack, defaultTab = 'roles' }) {
           <button
             key={key}
             onClick={() => setTab(key)}
-            className="flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200"
+            className="flex-1 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200"
             style={tab === key ? {
               background: 'linear-gradient(135deg, rgba(167,139,250,0.2), rgba(96,165,250,0.15))',
               border: '1px solid rgba(167,139,250,0.3)',
@@ -320,24 +421,9 @@ export function AcademyFace({ onFlipBack, defaultTab = 'roles' }) {
             <motion.div key="professions"
               initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -16 }} transition={{ duration: 0.18 }}
-              className="flex flex-wrap gap-2 overflow-y-auto content-start" style={{ maxHeight: 232, scrollbarWidth: 'none' }}
+              className="h-full"
             >
-              {ACADEMY_PROFESSIONS.map((name, i) => (
-                <motion.span
-                  key={name}
-                  initial={{ opacity: 0, scale: 0.92 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.2, delay: i * 0.04 }}
-                  className="text-[10px] font-semibold px-2.5 py-1.5 rounded-xl leading-tight"
-                  style={{
-                    background: 'rgba(167,139,250,0.08)',
-                    border: '1px solid rgba(167,139,250,0.2)',
-                    color: '#c4b5fd',
-                  }}
-                >
-                  {name}
-                </motion.span>
-              ))}
+              <ProfessionsTab />
             </motion.div>
           )}
         </AnimatePresence>
@@ -354,7 +440,7 @@ export function AcademyFace({ onFlipBack, defaultTab = 'roles' }) {
         <span className="text-xs font-bold font-mono" style={{ color: '#a78bfa' }}>
           {tab === 'roles'
             ? `${STATUS_ROLES.length} статуси · ${STATUS_ROLES.reduce((a, s) => a + s.roles.length, 0)} ролі`
-            : `${ACADEMY_PROFESSIONS.length} профессий`}
+            : `${ACADEMY_PROFESSIONS.length} профессий Web4`}
         </span>
       </div>
     </div>

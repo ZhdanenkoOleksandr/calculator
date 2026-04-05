@@ -3,7 +3,6 @@ import { motion } from 'framer-motion'
 import CoreBalanceCard from '../components/viking/CoreBalanceCard'
 import StatCard from '../components/viking/StatCard'
 import EconomyChartBlock from '../components/viking/EconomyChartBlock'
-import TokenGrid from '../components/viking/TokenGrid'
 import ActionFeed from '../components/viking/ActionFeed'
 import NextRoleCard from '../components/viking/NextRoleCard'
 import DigitalIntuition from '../components/viking/DigitalIntuition'
@@ -213,9 +212,6 @@ export default function VikingEconomy() {
 
         {/* CHART + ROLES — full width unified block */}
         <EconomyChartBlock timeline={TIMELINE} roles={ROLES} />
-
-        {/* TOKEN GRID */}
-        <TokenGrid tokens={TOKENS} />
 
         {/* ACTION FEED + NEXT ROLE */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

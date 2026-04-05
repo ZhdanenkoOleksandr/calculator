@@ -38,54 +38,6 @@ function CustomTooltip({ active, payload, label }) {
   )
 }
 
-// Mini sparkline chart for a single role
-function MiniRoleChart({ role, chartData, active, onClick }) {
-  const c = COLOR[role.color] ?? COLOR.blue
-  const gradId = `mini-grad-${role.name.replace(/\s/g, '')}`
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 6 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      onClick={onClick}
-      className="rounded-xl p-2.5 cursor-pointer transition-all duration-200"
-      style={{
-        background: active ? `${c.fill}18` : 'rgba(255,255,255,0.02)',
-        border: `1px solid ${active ? c.stroke + '45' : 'rgba(255,255,255,0.06)'}`,
-        boxShadow: active ? `0 0 14px ${c.glow}` : 'none',
-      }}
-    >
-      <div className="flex items-center justify-between mb-1.5">
-        <span className="text-[10px] font-semibold text-zinc-400 leading-tight truncate" style={{ maxWidth: '70%' }}>
-          {role.name}
-        </span>
-        <span className="text-[10px] font-bold font-mono flex-shrink-0 ml-1" style={{ color: c.stroke }}>
-          ${role.income.toLocaleString('en-US')}
-        </span>
-      </div>
-      <ResponsiveContainer width="100%" height={52}>
-        <AreaChart data={chartData} margin={{ top: 2, right: 0, bottom: 0, left: 0 }}>
-          <defs>
-            <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={c.stroke} stopOpacity={0.4} />
-              <stop offset="100%" stopColor={c.stroke} stopOpacity={0} />
-            </linearGradient>
-          </defs>
-          <Area
-            type="monotone"
-            dataKey={role.name}
-            stroke={c.stroke}
-            strokeWidth={1.5}
-            fill={`url(#${gradId})`}
-            dot={false}
-            activeDot={{ r: 3, fill: c.stroke }}
-          />
-        </AreaChart>
-      </ResponsiveContainer>
-    </motion.div>
-  )
-}
-
 // Horizontal role bar (no percentage)
 function RoleBar({ role, maxIncome, index, active, onClick }) {
   const c = COLOR[role.color] ?? COLOR.blue
@@ -280,25 +232,6 @@ export default function EconomyChartBlock({ timeline, roles, delay = 0 }) {
               )}
             </AreaChart>
           </ResponsiveContainer>
-        </div>
-
-        {/* ── Divider ── */}
-        <div className="h-px" style={{ background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.07),transparent)' }} />
-
-        {/* ── Mini per-role sparklines (2×2 grid) ── */}
-        <div>
-          <p className="text-[9px] uppercase tracking-[0.2em] text-zinc-600 font-semibold mb-2.5">По каждой роли</p>
-          <div className="grid grid-cols-2 gap-2">
-            {roles.map(role => (
-              <MiniRoleChart
-                key={role.name}
-                role={role}
-                chartData={chartData}
-                active={activeRole === role.name}
-                onClick={() => setActiveRole(prev => prev === role.name ? null : role.name)}
-              />
-            ))}
-          </div>
         </div>
 
         {/* ── Divider ── */}
