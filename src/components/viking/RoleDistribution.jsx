@@ -407,7 +407,7 @@ export function AcademyFace({ onFlipBack, defaultTab = 'roles' }) {
           >
             Академия
           </p>
-          <p className="text-white font-bold text-xl mt-0.5">Платформенная Экономика</p>
+          <p className="text-white font-bold text-xl mt-0.5">Академия</p>
         </div>
         {onFlipBack && (
           <button
@@ -431,28 +431,17 @@ export function AcademyFace({ onFlipBack, defaultTab = 'roles' }) {
           border: '1px solid rgba(139,92,246,0.2)',
         }}
       >
-        <div className="flex items-start gap-3">
-          <div
-            className="w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center text-xl"
-            style={{ background: 'linear-gradient(135deg, rgba(139,92,246,0.3), rgba(34,211,238,0.2))', border: '1px solid rgba(139,92,246,0.3)' }}
-          >
-            ⚔
-          </div>
-          <div className="flex flex-col gap-1.5">
-            <p className="text-sm font-bold text-white leading-snug">
-              Что такое Платформенная Экономика?
-            </p>
-            <p className="text-[13px] text-zinc-400 leading-relaxed">
-              Академия Платформенной Экономики — образовательная программа Системы Bitbon. Вы получаете знания, статус и инструменты для участия в децентрализованной цифровой экосистеме Web4.
-            </p>
-            <div className="flex flex-wrap gap-1.5 mt-1">
-              {['Web4', 'Bitbon System', 'DeFi', 'Metaresources', 'Smart Contracts'].map(tag => (
-                <span key={tag} className="text-[11px] font-semibold px-2 py-0.5 rounded-full"
-                  style={{ background: 'rgba(139,92,246,0.12)', border: '1px solid rgba(139,92,246,0.25)', color: '#a78bfa' }}>
-                  {tag}
-                </span>
-              ))}
-            </div>
+        <div className="flex flex-col items-center gap-2 text-center">
+          <p className="text-[21px] text-zinc-300 leading-snug" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+            Академия Платформенной Экономики — образовательная программа Системы Bitbon. Вы получаете знания, статус и инструменты для участия в децентрализованной цифровой экосистеме Web4.
+          </p>
+          <div className="flex flex-wrap justify-center gap-1.5">
+            {['Web4', 'Bitbon System', 'DeFi', 'Metaresources', 'Smart Contracts'].map(tag => (
+              <span key={tag} className="text-[11px] font-semibold px-2 py-0.5 rounded-full"
+                style={{ background: 'rgba(139,92,246,0.12)', border: '1px solid rgba(139,92,246,0.25)', color: '#a78bfa' }}>
+                {tag}
+              </span>
+            ))}
           </div>
         </div>
       </div>
