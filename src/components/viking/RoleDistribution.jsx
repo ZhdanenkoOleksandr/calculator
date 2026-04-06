@@ -517,10 +517,9 @@ export function AcademyFace({ onFlipBack, defaultTab = 'roles' }) {
         >
           {/* Visual certificate banner */}
           <div
-            className="relative flex items-center justify-center py-8 overflow-hidden"
+            className="relative flex flex-col items-center justify-center py-8 pb-6 overflow-hidden gap-5"
             style={{
               background: 'linear-gradient(135deg, #0c1e3e 0%, #0a2a5e 40%, #0d3580 60%, #1a4ba0 100%)',
-              minHeight: 140,
             }}
           >
             {/* Grid lines */}
@@ -532,13 +531,13 @@ export function AcademyFace({ onFlipBack, defaultTab = 'roles' }) {
               </defs>
               <rect width="100%" height="100%" fill="url(#cert-grid)" />
             </svg>
-            {/* Glow circles */}
-            <div className="absolute inset-0 flex items-center justify-center">
+            {/* Glow */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <div className="w-48 h-48 rounded-full opacity-20" style={{ background: 'radial-gradient(circle, #60a5fa, transparent)' }} />
             </div>
-            {/* Certificate visual element */}
+
+            {/* Certificate visual */}
             <div className="relative flex flex-col items-center gap-3 z-10">
-              {/* Main seal */}
               <div
                 className="w-20 h-20 rounded-full flex items-center justify-center"
                 style={{
@@ -550,7 +549,6 @@ export function AcademyFace({ onFlipBack, defaultTab = 'roles' }) {
               >
                 <span className="text-4xl">🏛</span>
               </div>
-              {/* Certificate text */}
               <div className="text-center">
                 <p className="text-[11px] uppercase tracking-[0.3em] font-semibold" style={{ color: 'rgba(147,197,253,0.7)' }}>
                   Bitbon System Academy
@@ -559,7 +557,6 @@ export function AcademyFace({ onFlipBack, defaultTab = 'roles' }) {
                   CERTIFICATE
                 </p>
               </div>
-              {/* Shield badges */}
               <div className="flex gap-3">
                 {['🛡', '🪙', '🛡'].map((ic, i) => (
                   <div key={i}
@@ -571,6 +568,42 @@ export function AcademyFace({ onFlipBack, defaultTab = 'roles' }) {
                     }}
                   >
                     {ic}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* ── 4 Certificate types — single row inside banner ── */}
+            <div className="relative z-10 w-full px-3 flex flex-col gap-2">
+              <p className="text-[10px] uppercase tracking-[0.2em] font-semibold text-center" style={{ color: 'rgba(147,197,253,0.5)' }}>
+                4 вида сертификатов
+              </p>
+              <div className="flex gap-1.5">
+                {CERT_TYPES.map((ct) => (
+                  <div
+                    key={ct.name}
+                    className="flex-1 rounded-xl p-2.5 flex flex-col gap-1"
+                    style={{
+                      background: 'rgba(255,255,255,0.06)',
+                      border: `1px solid ${ct.color}40`,
+                      backdropFilter: 'blur(6px)',
+                    }}
+                  >
+                    <div className="flex items-center gap-1">
+                      <span className="text-sm leading-none">{ct.icon}</span>
+                      <span
+                        className="text-[12px] font-bold px-1.5 py-0.5 rounded-full whitespace-nowrap"
+                        style={{ background: `${ct.color}25`, color: ct.color }}
+                      >
+                        {ct.level}
+                      </span>
+                    </div>
+                    <p className="text-[13px] font-bold leading-snug" style={{ color: '#e0f2fe' }}>
+                      {ct.name}
+                    </p>
+                    <p className="text-[12px] leading-relaxed" style={{ color: 'rgba(147,197,253,0.6)' }}>
+                      {ct.desc}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -603,40 +636,6 @@ export function AcademyFace({ onFlipBack, defaultTab = 'roles' }) {
           </div>
         </div>
 
-        {/* ── 4 Certificate types — single row ── */}
-        <div>
-          <p className="text-[11px] uppercase tracking-[0.2em] font-semibold text-zinc-600 mb-2">
-            В зависимости от результатов обучения выдаётся 4 вида сертификатов:
-          </p>
-          <div className="flex gap-2">
-            {CERT_TYPES.map((ct) => (
-              <div
-                key={ct.name}
-                className="flex-1 rounded-xl p-3 flex flex-col gap-1.5"
-                style={{
-                  background: `${ct.color}0a`,
-                  border: `1px solid ${ct.color}25`,
-                }}
-              >
-                <div className="flex items-center gap-1.5">
-                  <span className="text-base leading-none">{ct.icon}</span>
-                  <span
-                    className="text-[10px] font-bold px-1.5 py-0.5 rounded-full whitespace-nowrap"
-                    style={{ background: `${ct.color}18`, color: ct.color, border: `1px solid ${ct.color}30` }}
-                  >
-                    {ct.level}
-                  </span>
-                </div>
-                <p className="text-[11px] font-bold text-white leading-snug">
-                  {ct.name}
-                </p>
-                <p className="text-[10px] text-zinc-500 leading-relaxed">
-                  {ct.desc}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
 
       {/* Footer */}
