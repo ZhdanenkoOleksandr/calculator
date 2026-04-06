@@ -171,17 +171,6 @@ export default function VikingEconomy() {
           <CoreBalanceCard value={ECONOMY_VALUE} growthPct={GROWTH_PCT} />
         </div>
 
-        {/* NETWORK + ASSETS */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <StatCard title="Network Access" value="1,247" subtitle="Active connections"
-            color="blue" icon="ᛗ" delay={0} />
-          <StatCard title="Assets" value="23" subtitle="Active metaresources"
-            detail="Capacity" color="gold" barPct={58} icon="ᚠ" delay={0.1} />
-        </div>
-
-        {/* ── METARESOURCES flip explorer ── */}
-        <NetworkAccessCard />
-
         {/* ── СЕРВИСЫ LAYER: AURA + PING + LINK + brand carousel ── */}
         <div>
           <SectionDivider label="Сервисы" />
@@ -208,7 +197,14 @@ export default function VikingEconomy() {
           <DigitalIntuition aura={78} ping={94} link={72} />
         </div>
 
-        {/* ── ACCESS TOKENS · Network Access ── */}
+        {/* ── ACCESS TOKENS · Network Access (все компоненты) ── */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <StatCard title="Network Access" value="1,247" subtitle="Active connections"
+            color="blue" icon="ᛗ" delay={0} />
+          <StatCard title="Assets" value="23" subtitle="Active metaresources"
+            detail="Capacity" color="gold" barPct={58} icon="ᚠ" delay={0.1} />
+        </div>
+        <NetworkAccessCard />
         <TokenGrid tokens={TOKENS} />
 
         {/* ── bit.Trade IB-ПАКЕТЫ ── */}
