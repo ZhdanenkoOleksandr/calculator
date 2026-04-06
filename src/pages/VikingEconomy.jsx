@@ -11,6 +11,7 @@ import BitTrade from '../components/viking/BitTrade'
 import MetaResources from '../components/viking/MetaResources'
 import NetworkAccessCard from '../components/viking/NetworkAccessCard'
 import AssetboxCard from '../components/viking/AssetboxCard'
+import TokenGrid from '../components/viking/TokenGrid'
 import EcosystemConnections from '../components/viking/EcosystemConnections'
 
 // ─── Mock data ────────────────────────────────────────────────
@@ -206,6 +207,9 @@ export default function VikingEconomy() {
           />
           <DigitalIntuition aura={78} ping={94} link={72} />
         </div>
+
+        {/* ── ACCESS TOKENS · Network Access ── */}
+        <TokenGrid tokens={TOKENS} />
 
         {/* ── bit.Trade IB-ПАКЕТЫ ── */}
         <BitTrade />
