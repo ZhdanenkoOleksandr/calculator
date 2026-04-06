@@ -350,6 +350,37 @@ function AcademyItem({ name, icon, color, progress, launching, index }) {
   )
 }
 
+const CERT_TYPES = [
+  {
+    icon: '🔍',
+    name: 'Исследователь информационной экономики',
+    level: 'Базовый',
+    color: '#60a5fa',
+    desc: 'Базовый сертификат для освоения концепций цифровой и платформенной экономики. Онлайн-курс по книге «Информационная экономика за 90 секунд» в формате самоподготовки.',
+  },
+  {
+    icon: '🧭',
+    name: 'Навигатор информационной экономики',
+    level: 'Продвинутый',
+    color: '#a78bfa',
+    desc: 'Углубленный сертификат, охватывающий 10 базовых курсов: блокчейн, искусственный интеллект, бизнес-модели платформ. Включает интерактивные задания и групповые проекты.',
+  },
+  {
+    icon: '💎',
+    name: 'Мастер цифровых решений',
+    level: 'Специализация',
+    color: '#34d399',
+    desc: 'Специализированные сертификаты для профессионалов в конкретных отраслях — юриспруденции, маркетинге, бухучете, кибербезопасности.',
+  },
+  {
+    icon: '🏛',
+    name: 'Архитектор цифровых трансформаций',
+    level: 'Флагманский',
+    color: '#fbbf24',
+    desc: 'Флагманская программа для будущих лидеров цифровых трансформаций. Сочетает онлайн-курсы, офлайн-воркшопы и работу над реальными проектами.',
+  },
+]
+
 const CERT_POINTS = [
   { icon: '🎓', bold: 'Подтверждение Вашего статуса и компетенций', text: ' — сертификат удостоверяет Ваши знания и профессиональные навыки, полученные в Академии.' },
   { icon: '🔑', bold: 'Доступ к сервисам и инструментам', text: ' — дает Вам право работать с ключевыми цифровыми сервисами.' },
@@ -547,7 +578,7 @@ export function AcademyFace({ onFlipBack, defaultTab = 'roles' }) {
           </div>
 
           {/* Certificate text content */}
-          <div className="p-4 flex flex-col gap-3" style={{ background: 'rgba(8,8,20,0.9)' }}>
+          <div className="p-4 flex flex-col gap-4" style={{ background: 'rgba(8,8,20,0.9)' }}>
             <div>
               <h3 className="text-base font-bold text-white leading-snug">
                 Признание и подтверждение Ваших знаний
@@ -568,6 +599,41 @@ export function AcademyFace({ onFlipBack, defaultTab = 'roles' }) {
                   </p>
                 </div>
               ))}
+            </div>
+
+            {/* ── 4 Certificate types ── */}
+            <div>
+              <p className="text-[11px] uppercase tracking-[0.2em] font-semibold text-zinc-600 mb-3">
+                В зависимости от результатов обучения выдаётся 4 вида сертификатов:
+              </p>
+              <div className="grid grid-cols-2 gap-2">
+                {CERT_TYPES.map((ct) => (
+                  <div
+                    key={ct.name}
+                    className="rounded-xl p-3 flex flex-col gap-1.5"
+                    style={{
+                      background: `${ct.color}0a`,
+                      border: `1px solid ${ct.color}25`,
+                    }}
+                  >
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-base leading-none">{ct.icon}</span>
+                      <span
+                        className="text-[10px] font-bold px-1.5 py-0.5 rounded-full"
+                        style={{ background: `${ct.color}18`, color: ct.color, border: `1px solid ${ct.color}30` }}
+                      >
+                        {ct.level}
+                      </span>
+                    </div>
+                    <p className="text-[12px] font-bold text-white leading-snug">
+                      {ct.name}
+                    </p>
+                    <p className="text-[11px] text-zinc-500 leading-relaxed">
+                      {ct.desc}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
