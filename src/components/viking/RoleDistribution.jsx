@@ -176,10 +176,10 @@ function RolesTab() {
                 border: '1px solid rgba(255,255,255,0.07)',
               }}
             >
-              <span className="text-[10px] leading-none flex-shrink-0" style={{ color: active ? st.label : '#52525b' }}>
+              <span className="text-[13px] leading-none flex-shrink-0" style={{ color: active ? st.label : '#52525b' }}>
                 {s.icon}
               </span>
-              <span className="text-[10px] font-semibold leading-tight" style={{ color: active ? st.label : '#52525b' }}>
+              <span className="text-[13px] font-semibold leading-tight" style={{ color: active ? st.label : '#52525b' }}>
                 {s.status}
               </span>
             </button>
@@ -193,7 +193,7 @@ function RolesTab() {
       {/* Right: roles for selected status — 3 parts */}
       <div className="flex flex-col gap-1.5 overflow-y-auto" style={{ flex: 3, scrollbarWidth: 'none' }}>
         {/* Status label */}
-        <p className="text-[10px] uppercase tracking-wider font-semibold leading-tight" style={{ color: t.label + 'aa' }}>
+        <p className="text-[13px] uppercase tracking-wider font-semibold leading-tight" style={{ color: t.label + 'aa' }}>
           Статус «{current.status}» · ролі
         </p>
 
@@ -209,12 +209,12 @@ function RolesTab() {
             {current.roles.map((role) => (
               <div key={role.name} className="flex flex-col gap-0.5">
                 <span
-                  className="text-[10px] font-bold px-2 py-0.5 rounded self-start"
+                  className="text-[13px] font-bold px-2 py-0.5 rounded self-start"
                   style={{ background: `${t.label}18`, border: `1px solid ${t.label}35`, color: t.label }}
                 >
                   {role.name}
                 </span>
-                <p className="text-[10px] text-zinc-500 leading-relaxed">
+                <p className="text-[13px] text-zinc-500 leading-relaxed">
                   {role.desc}
                 </p>
               </div>
@@ -251,10 +251,10 @@ function ProfessionsTab() {
                 border: '1px solid rgba(255,255,255,0.07)',
               }}
             >
-              <span className="text-[10px] leading-none flex-shrink-0" style={{ color: active ? '#a78bfa' : '#52525b' }}>
+              <span className="text-[13px] leading-none flex-shrink-0" style={{ color: active ? '#a78bfa' : '#52525b' }}>
                 {p.icon}
               </span>
-              <span className="text-[10px] font-semibold leading-tight" style={{ color: active ? '#a78bfa' : '#52525b' }}>
+              <span className="text-[13px] font-semibold leading-tight" style={{ color: active ? '#a78bfa' : '#52525b' }}>
                 {p.name}
               </span>
             </button>
@@ -267,7 +267,7 @@ function ProfessionsTab() {
 
       {/* Right: description for selected profession — 3 parts */}
       <div className="flex flex-col gap-1.5 overflow-y-auto" style={{ flex: 3, scrollbarWidth: 'none' }}>
-        <p className="text-[10px] uppercase tracking-wider font-semibold leading-tight" style={{ color: 'rgba(167,139,250,0.7)' }}>
+        <p className="text-[13px] uppercase tracking-wider font-semibold leading-tight" style={{ color: 'rgba(167,139,250,0.7)' }}>
           Профессия Web4
         </p>
         <AnimatePresence mode="wait">
@@ -280,12 +280,12 @@ function ProfessionsTab() {
             className="flex flex-col gap-1.5"
           >
             <span
-              className="text-[10px] font-bold px-2 py-0.5 rounded self-start"
+              className="text-[13px] font-bold px-2 py-0.5 rounded self-start"
               style={{ background: 'rgba(167,139,250,0.12)', border: '1px solid rgba(167,139,250,0.3)', color: '#c4b5fd' }}
             >
               {current.name}
             </span>
-            <p className="text-[10px] text-zinc-500 leading-relaxed">
+            <p className="text-[13px] text-zinc-500 leading-relaxed">
               {current.desc}
             </p>
           </motion.div>
