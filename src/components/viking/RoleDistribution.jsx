@@ -420,8 +420,11 @@ export function AcademyFace({ onFlipBack, defaultTab = 'roles' }) {
         }}
       >
         <div className="flex flex-col items-center gap-2 text-center">
-          <p className="text-[13px] text-zinc-300 leading-snug" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-            Академия Платформенной Экономики — образовательная программа Системы Bitbon. Вы получаете знания, статус и инструменты для участия в децентрализованной цифровой экосистеме Web4.
+          <p className="text-[20px] text-zinc-200 font-semibold leading-snug">
+            Академия Платформенной Экономики — образовательная программа Системы Bitbon
+          </p>
+          <p className="text-[13px] text-zinc-400 leading-relaxed">
+            Вы получаете знания, статус и инструменты для участия в децентрализованной цифровой экосистеме Web4.
           </p>
           <div className="flex flex-wrap justify-center gap-1.5">
             {['Web4', 'Bitbon System', 'DeFi', 'Metaresources', 'Smart Contracts'].map(tag => (
