@@ -395,21 +395,9 @@ export function AcademyFace({ onFlipBack, defaultTab = 'roles' }) {
 
   return (
     <div className="flex flex-col gap-4">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-[10px] uppercase tracking-[0.2em] font-semibold"
-            style={{
-              background: 'linear-gradient(90deg, #a78bfa, #22d3ee)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
-          >
-            Академия
-          </p>
-          <p className="text-white font-bold text-xl mt-0.5">Академия</p>
-        </div>
-        {onFlipBack && (
+      {/* Header — close button only */}
+      {onFlipBack && (
+        <div className="flex justify-end">
           <button
             onClick={onFlipBack}
             className="flex w-8 h-8 rounded-lg items-center justify-center transition-all duration-150"
@@ -420,8 +408,8 @@ export function AcademyFace({ onFlipBack, defaultTab = 'roles' }) {
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* ── Platform Economy info (shared) ── */}
       <div
@@ -432,7 +420,7 @@ export function AcademyFace({ onFlipBack, defaultTab = 'roles' }) {
         }}
       >
         <div className="flex flex-col items-center gap-2 text-center">
-          <p className="text-[21px] text-zinc-300 leading-snug" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+          <p className="text-[13px] text-zinc-300 leading-snug" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
             Академия Платформенной Экономики — образовательная программа Системы Bitbon. Вы получаете знания, статус и инструменты для участия в децентрализованной цифровой экосистеме Web4.
           </p>
           <div className="flex flex-wrap justify-center gap-1.5">
