@@ -578,12 +578,13 @@ export function AcademyFace({ onFlipBack, defaultTab = 'roles' }) {
               <p className="text-[10px] uppercase tracking-[0.2em] font-semibold text-center" style={{ color: 'rgba(147,197,253,0.5)' }}>
                 4 вида сертификатов
               </p>
-              <div className="flex gap-1.5">
+              <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
                 {CERT_TYPES.map((ct) => (
                   <div
                     key={ct.name}
-                    className="flex-1 rounded-xl p-2.5 flex flex-col gap-1"
+                    className="rounded-xl p-2.5 flex flex-col gap-1 flex-shrink-0"
                     style={{
+                      width: 180,
                       background: 'rgba(255,255,255,0.06)',
                       border: `1px solid ${ct.color}40`,
                       backdropFilter: 'blur(6px)',
