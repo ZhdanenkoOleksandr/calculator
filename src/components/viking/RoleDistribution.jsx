@@ -578,7 +578,7 @@ export function AcademyFace({ onFlipBack, defaultTab = 'roles' }) {
           </div>
 
           {/* Certificate text content */}
-          <div className="p-4 flex flex-col gap-4" style={{ background: 'rgba(8,8,20,0.9)' }}>
+          <div className="p-4 flex flex-col gap-3" style={{ background: 'rgba(8,8,20,0.9)' }}>
             <div>
               <h3 className="text-base font-bold text-white leading-snug">
                 Признание и подтверждение Ваших знаний
@@ -600,41 +600,41 @@ export function AcademyFace({ onFlipBack, defaultTab = 'roles' }) {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
 
-            {/* ── 4 Certificate types ── */}
-            <div>
-              <p className="text-[11px] uppercase tracking-[0.2em] font-semibold text-zinc-600 mb-3">
-                В зависимости от результатов обучения выдаётся 4 вида сертификатов:
-              </p>
-              <div className="grid grid-cols-2 gap-2">
-                {CERT_TYPES.map((ct) => (
-                  <div
-                    key={ct.name}
-                    className="rounded-xl p-3 flex flex-col gap-1.5"
-                    style={{
-                      background: `${ct.color}0a`,
-                      border: `1px solid ${ct.color}25`,
-                    }}
+        {/* ── 4 Certificate types — single row ── */}
+        <div>
+          <p className="text-[11px] uppercase tracking-[0.2em] font-semibold text-zinc-600 mb-2">
+            В зависимости от результатов обучения выдаётся 4 вида сертификатов:
+          </p>
+          <div className="flex gap-2">
+            {CERT_TYPES.map((ct) => (
+              <div
+                key={ct.name}
+                className="flex-1 rounded-xl p-3 flex flex-col gap-1.5"
+                style={{
+                  background: `${ct.color}0a`,
+                  border: `1px solid ${ct.color}25`,
+                }}
+              >
+                <div className="flex items-center gap-1.5">
+                  <span className="text-base leading-none">{ct.icon}</span>
+                  <span
+                    className="text-[10px] font-bold px-1.5 py-0.5 rounded-full whitespace-nowrap"
+                    style={{ background: `${ct.color}18`, color: ct.color, border: `1px solid ${ct.color}30` }}
                   >
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-base leading-none">{ct.icon}</span>
-                      <span
-                        className="text-[10px] font-bold px-1.5 py-0.5 rounded-full"
-                        style={{ background: `${ct.color}18`, color: ct.color, border: `1px solid ${ct.color}30` }}
-                      >
-                        {ct.level}
-                      </span>
-                    </div>
-                    <p className="text-[12px] font-bold text-white leading-snug">
-                      {ct.name}
-                    </p>
-                    <p className="text-[11px] text-zinc-500 leading-relaxed">
-                      {ct.desc}
-                    </p>
-                  </div>
-                ))}
+                    {ct.level}
+                  </span>
+                </div>
+                <p className="text-[11px] font-bold text-white leading-snug">
+                  {ct.name}
+                </p>
+                <p className="text-[10px] text-zinc-500 leading-relaxed">
+                  {ct.desc}
+                </p>
               </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
