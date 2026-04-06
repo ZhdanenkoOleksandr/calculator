@@ -135,7 +135,7 @@ export default function EconomyChartBlock({ timeline, roles, delay = 0 }) {
 
   // Timeline with per-role values derived from income ratio
   const chartData = timeline.map(pt => {
-    const row = { year: pt.year, Суммарно: pt.value }
+    const row = { year: pt.year, Сумарно: pt.value }
     roles.forEach(r => { row[r.name] = Math.round(pt.value * (r.income / total)) })
     return row
   })
@@ -175,7 +175,7 @@ export default function EconomyChartBlock({ timeline, roles, delay = 0 }) {
                 className="text-[10px] font-semibold px-2.5 py-1 rounded-lg transition-all"
                 style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: '#71717a' }}
               >
-                ← Общий
+                ← Загальний
               </button>
             )}
             <div
@@ -216,7 +216,7 @@ export default function EconomyChartBlock({ timeline, roles, delay = 0 }) {
               <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'rgba(139,92,246,0.25)', strokeWidth: 1 }} />
 
               {!shownRole ? (
-                <Area type="monotone" dataKey="Суммарно" name="Суммарно"
+                <Area type="monotone" dataKey="Сумарно" name="Сумарно"
                   stroke="#8b5cf6" strokeWidth={2.5} fill="url(#gradTotal)"
                   dot={{ fill: '#8b5cf6', r: 3, strokeWidth: 0 }}
                   activeDot={{ r: 5, fill: '#a78bfa', stroke: 'rgba(139,92,246,0.4)', strokeWidth: 3 }}
@@ -268,7 +268,7 @@ export default function EconomyChartBlock({ timeline, roles, delay = 0 }) {
             <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
-            Получить Роль
+            Отримати Роль
           </button>
 
           {/* Center: indicator dots */}
@@ -289,7 +289,7 @@ export default function EconomyChartBlock({ timeline, roles, delay = 0 }) {
               boxShadow: '0 0 12px rgba(34,211,238,0.1)',
             }}
           >
-            Получить Профессию
+            Отримати Професію
             <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
             </svg>

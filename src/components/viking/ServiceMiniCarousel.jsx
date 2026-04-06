@@ -116,7 +116,7 @@ export default function ServiceMiniCarousel({ services }) {
           background: 'linear-gradient(90deg, #38bdf8, #22d3ee)',
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
-        }}>Сервисы Bitbon System</span>
+        }}>Сервіси Bitbon System</span>
       </p>
 
       {/* Track container */}

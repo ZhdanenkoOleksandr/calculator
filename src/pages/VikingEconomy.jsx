@@ -8,10 +8,7 @@ import NextRoleCard from '../components/viking/NextRoleCard'
 import DigitalIntuition from '../components/viking/DigitalIntuition'
 import ServiceMiniCarousel from '../components/viking/ServiceMiniCarousel'
 import BitTrade from '../components/viking/BitTrade'
-import MetaResources from '../components/viking/MetaResources'
-import NetworkAccessCard from '../components/viking/NetworkAccessCard'
 import AssetboxCard from '../components/viking/AssetboxCard'
-import TokenGrid from '../components/viking/TokenGrid'
 import EcosystemConnections from '../components/viking/EcosystemConnections'
 
 // ─── Mock data ────────────────────────────────────────────────
@@ -30,18 +27,9 @@ const TIMELINE = [
 
 const ROLES = [
   { name: 'Провайдер',                    income: 104097, color: 'blue',    icon: 'ᚹ' },
-  { name: 'Инвестор',                     income: 57005,  color: 'gold',    icon: 'ᚠ' },
-  { name: 'Партнер 6-го уровня bit.Trade', income: 73420,  color: 'purple',  icon: 'ᛒ' },
+  { name: 'Інвестор',                      income: 57005,  color: 'gold',    icon: 'ᚠ' },
+  { name: 'Партнер 6-го рівня bit.Trade',  income: 73420,  color: 'purple',  icon: 'ᛒ' },
   { name: 'Холдер bit.Trade',              income: 13428,  color: 'orange',  icon: 'ᛖ' },
-]
-
-const TOKENS = [
-  { name: 'Viking Core',  active: true,  projectShare: 34, icon: '⚔' },
-  { name: 'BeautyNet',    active: true,  projectShare: 18, icon: 'ᛊ' },
-  { name: 'Scanerbon',    active: true,  projectShare: 22, icon: 'ᚲ' },
-  { name: 'AuraBond',     active: true,  projectShare: 11, icon: 'ᛉ' },
-  { name: 'DAO District', active: false, projectShare: 0,  icon: 'ᛜ' },
-  { name: 'NetTrack',     active: false, projectShare: 0,  icon: 'ᛗ' },
 ]
 
 // Bitbon System services — полный список из скриншотов
@@ -171,41 +159,39 @@ export default function VikingEconomy() {
           <CoreBalanceCard value={ECONOMY_VALUE} growthPct={GROWTH_PCT} />
         </div>
 
-        {/* ── СЕРВИСЫ LAYER: AURA + PING + LINK + brand carousel ── */}
-        <div>
-          <SectionDivider label="Сервисы" />
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <StatCard title="AURA" value="78" subtitle="Reputation score"
-              detail="Reputation" color="purple" barPct={78} icon="ᛊ" delay={0} />
-            <StatCard title="PING" value="94" subtitle="Network pulse"
-              detail="Активность" color="cyan" barPct={94} icon="ᚲ" delay={0.08} />
-            <StatCard title="LINK" value="3,241" subtitle="Активных связей"
-              color="teal" icon="ᛚ" delay={0.16} />
-          </div>
-          {/* Personal brand services mini carousel — cards ~30% of StatCard height */}
-          <ServiceMiniCarousel services={BRAND_SERVICES} />
-        </div>
-
-        {/* ── ИНСТРУМЕНТЫ LAYER: Цифровая интуиция ── */}
-        <div>
-          <SectionDivider
-            label="Инструменты"
-            color="#22d3ee"
-            bg="rgba(34,211,238,0.07)"
-            border="rgba(34,211,238,0.2)"
-          />
-          <DigitalIntuition aura={78} ping={94} link={72} />
-        </div>
-
-        {/* ── ACCESS TOKENS · Network Access (все компоненты) ── */}
+        {/* ── STAT CARDS ── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <StatCard title="Network Access" value="1,247" subtitle="Active connections"
             color="blue" icon="ᛗ" delay={0} />
           <StatCard title="Assets" value="23" subtitle="Active metaresources"
             detail="Capacity" color="gold" barPct={58} icon="ᚠ" delay={0.1} />
         </div>
-        <NetworkAccessCard />
-        <TokenGrid tokens={TOKENS} />
+
+        {/* ── СЕРВІСИ LAYER: AURA + PING + LINK + brand carousel ── */}
+        <div>
+          <SectionDivider label="Сервіси" />
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <StatCard title="AURA" value="78" subtitle="Reputation score"
+              detail="Reputation" color="purple" barPct={78} icon="ᛊ" delay={0} />
+            <StatCard title="PING" value="94" subtitle="Network pulse"
+              detail="Активність" color="cyan" barPct={94} icon="ᚲ" delay={0.08} />
+            <StatCard title="LINK" value="3,241" subtitle="Активних зв'язків"
+              color="teal" icon="ᛚ" delay={0.16} />
+          </div>
+          {/* Personal brand services mini carousel — cards ~30% of StatCard height */}
+          <ServiceMiniCarousel services={BRAND_SERVICES} />
+        </div>
+
+        {/* ── ІНСТРУМЕНТИ LAYER: Цифрова інтуїція ── */}
+        <div>
+          <SectionDivider
+            label="Інструменти"
+            color="#22d3ee"
+            bg="rgba(34,211,238,0.07)"
+            border="rgba(34,211,238,0.2)"
+          />
+          <DigitalIntuition aura={78} ping={94} link={72} />
+        </div>
 
         {/* ── bit.Trade IB-ПАКЕТЫ ── */}
         <BitTrade />

@@ -4,22 +4,22 @@ import { motion, AnimatePresence } from 'framer-motion'
 // ── IB Package data ───────────────────────────────────────────
 const IB_PACKAGES = [
   {
-    name: 'Платформенная экономика',
+    name: 'Платформенна економіка',
     icon: 'ᚷ',
     color: '#60a5fa',
     price: '$950',
-    desc: 'Получите доступ к знаниям о цифровых экосистемах Индустрии 4.0.',
-    cta: 'Оформить',
+    desc: 'Отримайте доступ до знань про цифрові екосистеми Індустрії 4.0.',
+    cta: 'Оформити',
     soon: false,
     exclusive: false,
   },
   {
-    name: 'Библиотека эрудированного инвестора',
+    name: 'Бібліотека ерудованого інвестора',
     icon: 'ᛒ',
     color: '#818cf8',
     price: null,
-    desc: 'Получайте теоретические и практические знания о глобальной платформенной экономике в эксклюзивной коллекции книг.',
-    cta: 'Оформить',
+    desc: 'Отримуйте теоретичні та практичні знання про глобальну платформенну економіку в ексклюзивній колекції книг.',
+    cta: 'Оформити',
     soon: false,
     exclusive: false,
   },
@@ -28,8 +28,8 @@ const IB_PACKAGES = [
     icon: 'ᛚ',
     color: '#22d3ee',
     price: null,
-    desc: 'Заключайте выгодные сделки в сервисе BLUMB по поставке Bitbon корпоративному сегменту.',
-    cta: 'Оформить',
+    desc: 'Укладайте вигідні угоди в сервісі BLUMB з постачання Bitbon корпоративному сегменту.',
+    cta: 'Оформити',
     soon: false,
     exclusive: false,
   },
@@ -38,7 +38,7 @@ const IB_PACKAGES = [
     icon: 'ᚠ',
     color: '#fbbf24',
     price: 'от ₿ 500',
-    desc: 'Воспользуйтесь историческим шансом и получите уникальное преимущество на этапе коммерческого старта Системы Bitbon.',
+    desc: 'Скористайтеся історичним шансом і отримайте унікальну перевагу на етапі комерційного старту Системи Bitbon.',
     cta: 'Перейти',
     soon: false,
     exclusive: false,
@@ -49,8 +49,8 @@ const IB_PACKAGES = [
     icon: 'ᚹ',
     color: '#34d399',
     price: 'от $6 000',
-    desc: 'Получите комплекс возможностей по запуску и развитию своего бизнеса на базе Системы Bitbon.',
-    cta: 'Оформить',
+    desc: 'Отримайте комплекс можливостей для запуску та розвитку свого бізнесу на базі Системи Bitbon.',
+    cta: 'Оформити',
     soon: true,
     exclusive: false,
   },
@@ -59,8 +59,8 @@ const IB_PACKAGES = [
     icon: 'ᛟ',
     color: '#fb923c',
     price: null,
-    desc: 'Получите возможность стать официальным дистрибьютором Bitbon в своем регионе.',
-    note: 'IB-пакет доступен только для Стратегических партнеров 6-го карьерного уровня и выше',
+    desc: 'Отримайте можливість стати офіційним дистриб\'ютором Bitbon у своєму регіоні.',
+    note: 'IB-пакет доступний лише для Стратегічних партнерів 6-го кар\'єрного рівня та вище',
     cta: null,
     soon: false,
     exclusive: true,
@@ -83,7 +83,7 @@ const ROLE_THEME = {
 const TRADE_ROLES = [
   { name: 'Агент',       icon: 'ᚹ', color: 'emerald', pct: 75, range: '10–75%'  },
   { name: 'Консультант', icon: 'ᚲ', color: 'blue',    pct: 93, range: '10–93%'  },
-  { name: 'Советник',    icon: 'ᚠ', color: 'orange',  pct: 100, range: '10–100%' },
+  { name: 'Радник',      icon: 'ᚠ', color: 'orange',  pct: 100, range: '10–100%' },
 ]
 
 // ── Package card ──────────────────────────────────────────────
@@ -227,7 +227,7 @@ function RolesFace({ onFlipBack }) {
           >
             bit.Trade
           </p>
-          <p className="text-white font-bold text-lg mt-0.5">Роли партнёра</p>
+          <p className="text-white font-bold text-lg mt-0.5">Ролі партнера</p>
         </div>
 
         {/* Back button */}
@@ -235,7 +235,7 @@ function RolesFace({ onFlipBack }) {
           onClick={onFlipBack}
           className="hidden sm:flex w-7 h-7 rounded-lg items-center justify-center transition-all duration-150"
           style={{ background: 'rgba(56,189,248,0.1)', border: '1px solid rgba(56,189,248,0.25)' }}
-          title="Вернуться к пакетам"
+          title="Повернутися до пакетів"
         >
           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="#38bdf8" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
@@ -255,15 +255,15 @@ function RolesFace({ onFlipBack }) {
         className="rounded-xl px-3 py-2 flex items-center justify-between"
         style={{ background: 'rgba(56,189,248,0.05)', border: '1px solid rgba(56,189,248,0.12)' }}
       >
-        <span className="text-[9px] text-zinc-600 uppercase tracking-widest">bit.Trade · Диапазон дохода</span>
+        <span className="text-[9px] text-zinc-600 uppercase tracking-widest">bit.Trade · Діапазон доходу</span>
         <span className="text-xs font-bold font-mono" style={{ color: '#38bdf8' }}>
-          {TRADE_ROLES.length} роли
+          {TRADE_ROLES.length} ролі
         </span>
       </div>
 
       {/* Mobile swipe hint */}
       <p className="text-center text-[9px] text-zinc-700 tracking-widest uppercase sm:hidden -mt-1">
-        ← свайп → пакеты
+        ← свайп → пакети
       </p>
     </div>
   )
@@ -333,7 +333,7 @@ export default function BitTrade() {
               >
                 bit.Trade
               </p>
-              <p className="text-white font-bold text-lg mt-0.5">IB-Пакеты</p>
+              <p className="text-white font-bold text-lg mt-0.5">IB-Пакети</p>
             </div>
 
             <div className="flex items-center gap-2">
@@ -346,10 +346,10 @@ export default function BitTrade() {
                   border: '1px solid rgba(56,189,248,0.22)',
                   color: '#38bdf8',
                 }}
-                title="Доход по ролям"
+                title="Дохід за ролями"
               >
                 <span className="text-xs leading-none">ᛗ</span>
-                <span className="text-[10px] font-semibold">Роли</span>
+                <span className="text-[10px] font-semibold">Ролі</span>
               </button>
 
               {/* Dots */}
@@ -422,16 +422,16 @@ export default function BitTrade() {
             style={{ background: 'rgba(56,189,248,0.04)', border: '1px solid rgba(56,189,248,0.1)' }}
           >
             <span className="text-xs text-zinc-600 uppercase tracking-widest">
-              bit.Trade · IB-Программы
+              bit.Trade · IB-Програми
             </span>
             <span className="text-sm font-bold font-mono" style={{ color: '#38bdf8' }}>
-              {IB_PACKAGES.length} пакетов
+              {IB_PACKAGES.length} пакетів
             </span>
           </div>
 
           {/* Mobile swipe hint */}
           <p className="text-center text-[9px] text-zinc-700 tracking-widest uppercase sm:hidden -mt-2">
-            ← свайп → роли
+            ← свайп → ролі
           </p>
         </div>
 

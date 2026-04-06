@@ -125,7 +125,7 @@ function AddressRow() {
         rel="noopener noreferrer"
         className="flex-1 text-[11px] font-mono transition-opacity hover:opacity-70"
         style={{ color: '#38bdf8', wordBreak: 'break-all' }}
-        title="Открыть в Bitbon System"
+        title="Відкрити в Bitbon System"
       >
         <span className="hidden sm:inline">{ADDR}</span>
         <span className="sm:hidden">{short}</span>
@@ -139,7 +139,7 @@ function AddressRow() {
           background: copied ? 'rgba(52,211,153,0.15)' : 'rgba(255,255,255,0.04)',
           border: `1px solid ${copied ? 'rgba(52,211,153,0.3)' : 'rgba(255,255,255,0.08)'}`,
         }}
-        title="Копировать адрес"
+        title="Копіювати адресу"
       >
         {copied ? (
           <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="#34d399" strokeWidth={2.5}>
@@ -162,7 +162,7 @@ function AddressRow() {
           background: 'rgba(56,189,248,0.08)',
           border: '1px solid rgba(56,189,248,0.2)',
         }}
-        title="Открыть в Bitbon System"
+        title="Відкрити в Bitbon System"
       >
         <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="#38bdf8" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
@@ -214,7 +214,7 @@ function GenesisSBadge() {
           </span>
         </div>
         <p className="text-[9px] font-semibold text-white/80 leading-tight mt-0.5">
-          Візіонер реалізації стартапа
+          Візіонер реалізації стартапу
         </p>
         <p className="text-[8px] text-zinc-600 leading-snug mt-0.5 italic">
           Побачив архітектуру майбутнього, коли інші ще не здогадувалися про неї
@@ -290,7 +290,7 @@ export default function AssetboxCard({ bitbonOpen, onespaceoOpen, onBitbonToggle
 
         {/* Address */}
         <div className="relative flex flex-col gap-1.5">
-          <p className="text-[9px] uppercase tracking-widest text-zinc-600">Адреса кошелька</p>
+          <p className="text-[9px] uppercase tracking-widest text-zinc-600">Адреса гаманця</p>
           <AddressRow />
         </div>
 

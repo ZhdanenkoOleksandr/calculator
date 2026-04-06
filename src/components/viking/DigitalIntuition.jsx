@@ -12,8 +12,8 @@ const C = {
 const GENESIS_CERTS = [
   {
     class: 'A',
-    title: 'Последователь идей стартапа',
-    desc: 'Поверил в идею до того, как она стала реальностью',
+    title: 'Послідовник ідей стартапу',
+    desc: 'Повірив в ідею до того, як вона стала реальністю',
     bg: 'linear-gradient(135deg, #0c2a4a 0%, #0d3a6e 50%, #0a2d5c 100%)',
     border: 'rgba(56,189,248,0.5)',
     glow: 'rgba(56,189,248,0.25)',
@@ -23,8 +23,8 @@ const GENESIS_CERTS = [
   },
   {
     class: 'B',
-    title: 'Сторонник стартапа',
-    desc: 'Сделал уверенный шаг навстречу своему лучшему будущему, когда другие даже не догадывались о таких возможностях',
+    title: 'Прихильник стартапу',
+    desc: 'Зробив впевнений крок назустріч своєму кращому майбутньому, коли інші навіть не здогадувалися про такі можливості',
     bg: 'linear-gradient(135deg, #0f1f3d 0%, #1e3a6e 50%, #0f2a56 100%)',
     border: 'rgba(96,165,250,0.5)',
     glow: 'rgba(96,165,250,0.2)',
@@ -34,8 +34,8 @@ const GENESIS_CERTS = [
   },
   {
     class: 'C',
-    title: 'Активный участник стартапа',
-    desc: 'Начал придавать форму будущему своими действиями',
+    title: 'Активний учасник стартапу',
+    desc: 'Почав надавати форму майбутньому своїми діями',
     bg: 'linear-gradient(135deg, #1a1a1a 0%, #2a2018 50%, #1c1c1c 100%)',
     border: 'rgba(180,130,60,0.5)',
     glow: 'rgba(180,130,60,0.2)',
@@ -45,8 +45,8 @@ const GENESIS_CERTS = [
   },
   {
     class: 'E',
-    title: 'Драйвер развития стартапа',
-    desc: 'Стал лидером, на которого могли положиться другие',
+    title: 'Драйвер розвитку стартапу',
+    desc: 'Став лідером, на якого могли покластися інші',
     bg: 'linear-gradient(135deg, #1e1208 0%, #2d1a08 50%, #1a0e04 100%)',
     border: 'rgba(217,119,6,0.5)',
     glow: 'rgba(217,119,6,0.2)',
@@ -56,8 +56,8 @@ const GENESIS_CERTS = [
   },
   {
     class: 'S',
-    title: 'Визионер реализации стартапа',
-    desc: 'Увидел архитектуру будущего, когда другие ещё не догадывались о ней',
+    title: 'Візіонер реалізації стартапу',
+    desc: 'Побачив архітектуру майбутнього, коли інші ще не здогадувалися про неї',
     bg: 'linear-gradient(135deg, #0a0e14 0%, #141c28 50%, #0c1018 100%)',
     border: 'rgba(148,163,184,0.4)',
     glow: 'rgba(148,163,184,0.15)',
@@ -210,7 +210,7 @@ function GenesisCertCarousel() {
       {/* Label */}
       <div className="flex items-center justify-between">
         <p className="text-[9px] uppercase tracking-[0.2em] text-zinc-600 font-semibold">
-          Сертификат Genesis · усиливает возможности
+          Сертифікат Genesis · посилює можливості
         </p>
         {/* Dots */}
         <div className="flex gap-1">
@@ -378,9 +378,9 @@ export default function DigitalIntuition({ aura, ping, link, delay = 0 }) {
             WebkitTextFillColor: 'transparent',
           }}
         >
-          Инструменты · Composite
+          Інструменти · Composite
         </p>
-        <p className="text-white font-bold text-lg mt-0.5">Цифровая интуиция</p>
+        <p className="text-white font-bold text-lg mt-0.5">Цифрова інтуїція</p>
       </div>
 
       {/* Radar + score */}
@@ -412,7 +412,7 @@ export default function DigitalIntuition({ aura, ping, link, delay = 0 }) {
               {grade}
             </span>
           </div>
-          <p className="text-[10px] text-zinc-600 -mt-1">Интегральный индекс</p>
+          <p className="text-[10px] text-zinc-600 -mt-1">Інтегральний індекс</p>
 
           <div className="flex flex-col gap-1.5 mt-1">
             {metrics.map((m, i) => (
