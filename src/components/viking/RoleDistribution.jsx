@@ -582,9 +582,9 @@ export function AcademyFace({ onFlipBack, defaultTab = 'roles' }) {
                 {CERT_TYPES.map((ct) => (
                   <div
                     key={ct.name}
-                    className="rounded-xl p-2.5 flex flex-col gap-1 flex-shrink-0"
+                    className="rounded-xl p-2.5 flex flex-col gap-1 flex-shrink-0 sm:flex-1 sm:flex-shrink"
                     style={{
-                      width: 180,
+                      minWidth: 160,
                       background: 'rgba(255,255,255,0.06)',
                       border: `1px solid ${ct.color}40`,
                       backdropFilter: 'blur(6px)',
